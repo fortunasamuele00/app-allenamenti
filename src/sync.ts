@@ -40,7 +40,12 @@ async function api(s: Settings, path: string, init?: RequestInit): Promise<Respo
     throw new SyncError('Sei offline: i salvataggi restano in coda.');
   }
   if (res.status === 401) throw new SyncError('GitHub rifiuta il token: controllalo nelle impostazioni.');
-  if (res.status === 403) throw new SyncError('Il token non ha il permesso Contents in scrittura su questo repo.');
+  if (res.status === 403) {
+    // Il motivo lo dice GitHub: lo riporto così com'è (non contiene mai il token).
+    const why = await res.json().then((j: { message?: string }) => j.message ?? '', () => '');
+    const write = init?.method === 'PUT';
+    throw new SyncError(`${write ? 'Il token legge il repo ma non può scriverci: metti Contents su "Read and write".' : 'Il token non può leggere questo repo: manca il permesso Contents, oppure il repo non è tra quelli selezionati.'}${why ? ` GitHub dice: ${why}` : ''}`);
+  }
   return res;
 }
 
