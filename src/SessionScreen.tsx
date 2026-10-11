@@ -4,6 +4,7 @@ import { describeLast, forzaExercise, getProgram, lastExercise } from './program
 import { readyToProgress } from './progression';
 import type { Location, Session, SetLog, Settings, StoredSession } from './types';
 import { Check, DangerButton, GapRest, GuideSheet, Icon, NameButton, ReadyBadge, RestDock, SetFields, Sheet, TopBar, setCols, type GuideRef, type Rest } from './ui';
+import { go } from './nav';
 
 export function SessionScreen({ draft, setDraft, sessions, settings, saveSettings, onFinish, onDiscard }: {
   draft: Session; setDraft: (s: Session) => void; sessions: StoredSession[]; settings: Settings;
@@ -68,7 +69,7 @@ export function SessionScreen({ draft, setDraft, sessions, settings, saveSetting
 
   return (
     <div className={`screen${rest ? ' with-dock' : ''}`}>
-      <TopBar title={`${def.id} · ${def.name}`} onBack={() => { location.hash = '#/'; }} />
+      <TopBar title={`${def.id} · ${def.name}`} onBack={() => { go('#/'); }} />
       <div className="seg" role="group" aria-label="Dove ti alleni">
         {(['palestra', 'casa'] as const).map((l) => (
           <button key={l} type="button" aria-pressed={draft.location === l} onClick={() => setLocation(l)}>{l === 'palestra' ? 'Palestra' : 'Casa'}</button>

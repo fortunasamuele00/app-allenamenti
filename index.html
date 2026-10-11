@@ -13,6 +13,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
     <title>Allenamenti</title>
+    <style>html { background: #ECEDF0; } @media (prefers-color-scheme: dark) { html { background: #111214; } } html[data-theme=light] { background: #ECEDF0; } html[data-theme=dark] { background: #111214; }</style>
+    <script>
+      try {
+        var t = localStorage.getItem('tema');
+        if (t === 'light' || t === 'dark') {
+          document.documentElement.dataset.theme = t;
+          document.querySelectorAll('meta[name=theme-color]').forEach(function (m) { m.setAttribute('content', t === 'dark' ? '#111214' : '#ECEDF0'); });
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

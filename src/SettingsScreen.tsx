@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { flush, testConnection, useSync } from './sync';
 import type { Settings } from './types';
+import { HEALTH_SHORTCUT } from './program';
+import { ThemeToggle } from './theme';
 import { NumField } from './ui';
 
 export function SettingsScreen({ settings, saveSettings }: { settings: Settings; saveSettings: (s: Settings) => Promise<void> }) {
@@ -12,7 +14,7 @@ export function SettingsScreen({ settings, saveSettings }: { settings: Settings;
 
   return (
     <div className="screen with-nav">
-      <div className="top" />
+      <div className="top"><span /><ThemeToggle /></div>
       <h1 className="t-display day">Impostazioni</h1>
 
       <section className="ex">
@@ -32,6 +34,22 @@ export function SettingsScreen({ settings, saveSettings }: { settings: Settings;
         <p className="note">{!sync.configured ? 'Non configurata: le sedute restano sul telefono e in coda.' : sync.pending ? `${sync.pending} ${sync.pending === 1 ? 'salvataggio' : 'salvataggi'} in coda.` : 'Tutto salvato sul repo.'}</p>
         {sync.error && <p className="err" role="alert">{sync.error}</p>}
         <button className="btn wide" type="button" disabled={sync.busy || !sync.configured} onClick={() => void flush()}>{sync.busy ? 'Sincronizzo…' : 'Sincronizza ora'}</button>
+      </section>
+
+      <section className="ex">
+        <h2 className="t-title">Salute</h2>
+        <p className="note">Un'app web non può scrivere in Salute da sola. Lo fa un Comando rapido: a seduta salvata compare "Aggiungi a Salute", che lo apre con la durata. Carichi e ripetizioni restano qui e su GitHub.</p>
+        <label className="switch">
+          <input type="checkbox" checked={form.health} onChange={async (e) => { const next = { ...form, health: e.target.checked }; setForm(next); await saveSettings({ ...settings, health: next.health }); }} />
+          <span>Proponi "Aggiungi a Salute" dopo ogni seduta</span>
+        </label>
+        <p className="t-label">Da fare una volta, nell'app Comandi rapidi:</p>
+        <ol className="guide-how">
+          <li>Crea un comando e chiamalo esattamente <b>{HEALTH_SHORTCUT.forza}</b>.</li>
+          <li>Aggiungi l'azione "Registra allenamento": tipo "Allenamento di forza tradizionale".</li>
+          <li>In Durata tocca il valore, scegli "Input comando rapido" e come unità i minuti.</li>
+          <li>Duplicalo, chiamalo <b>{HEALTH_SHORTCUT.emom}</b> e cambia il tipo in "Allenamento a intervalli ad alta intensità".</li>
+        </ol>
       </section>
 
       <section className="ex">

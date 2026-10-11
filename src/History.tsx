@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import muscleData from './muscles.json';
-import { describeSet, getProgram, localDate, minutesOf, partLabel, shortDay, sortedDesc } from './program';
+import { describeSet, getProgram, healthUrl, localDate, minutesOf, partLabel, shortDay, sortedDesc } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, StoredSession } from './types';
+import { ThemeToggle } from './theme';
 import { Icon, ReadyBadge, TopBar } from './ui';
+import { go, Link } from './nav';
 
 interface Point { date: string; value: number }
 
@@ -118,7 +120,7 @@ export function History({ sessions }: { sessions: StoredSession[] }) {
 
   return (
     <div className="screen with-nav">
-      <div className="top"><p className="t-label">{list.length} {list.length === 1 ? 'seduta' : 'sedute'}</p></div>
+      <div className="top"><p className="t-label">{list.length} {list.length === 1 ? 'seduta' : 'sedute'}</p><ThemeToggle /></div>
       <h1 className="t-display day">Storico</h1>
 
       {!list.length && <p className="empty">Qui trovi le sedute salvate e i grafici per esercizio. Inizia la prima dalla scheda Programma.</p>}
@@ -141,22 +143,22 @@ export function History({ sessions }: { sessions: StoredSession[] }) {
       {list.length > 0 && <h2 className="t-head log-h">Sedute</h2>}
       <div className="log">
         {list.map((s) => (
-          <a key={s.id} href={`#/storico/${s.id}`}>
+          <Link key={s.id} to={`#/storico/${s.id}`}>
             <i className={s.part === 'emom' ? 'h' : ''}>{s.program}</i>
             <span><b>{partLabel(s.part)}</b><small>{shortDay(s.date)} · {s.location}{minutesOf(s) ? ` · ${minutesOf(s)} min` : ''}{s.synced ? '' : ' · in coda'}</small></span>
             <Icon name="chev" />
-          </a>
+          </Link>
         ))}
       </div>
     </div>
   );
 }
 
-export function SessionDetail({ session, sessions }: { session: StoredSession; sessions: StoredSession[] }) {
+export function SessionDetail({ session, sessions, health }: { session: StoredSession; sessions: StoredSession[]; health: boolean }) {
   const def = getProgram(session.program);
   return (
     <div className="screen">
-      <TopBar title={shortDay(session.date)} onBack={() => { location.hash = '#/storico'; }} />
+      <TopBar title={shortDay(session.date)} onBack={() => { go('#/storico'); }} />
       <h1 className="t-display day">{def.id} · {def.name}</h1>
       <p className="t-label">{partLabel(session.part)} · {session.location}{minutesOf(session) ? ` · ${minutesOf(session)} min` : ''} · {session.synced ? 'salvata su GitHub' : 'in coda per GitHub'}</p>
       {session.exercises.map((ex) => {
@@ -170,6 +172,7 @@ export function SessionDetail({ session, sessions }: { session: StoredSession; s
         );
       })}
       {session.notes && <p className="note">{session.notes}</p>}
+      {health && <a className="btn wide" href={healthUrl(session)}>Aggiungi a Salute</a>}
     </div>
   );
 }

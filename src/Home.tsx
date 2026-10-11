@@ -1,7 +1,9 @@
 import { blockWeek, getProgram, localDate, nextProgram, partLabel, program } from './program';
 import { useSync } from './sync';
 import type { Location, Part, ProgramId, Session, StoredSession } from './types';
+import { ThemeToggle } from './theme';
 import { DangerButton, Icon } from './ui';
+import { Link } from './nav';
 
 const fmtToday = new Intl.DateTimeFormat('it-IT', { weekday: 'long' });
 const fmtDate = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'long' });
@@ -12,11 +14,11 @@ export function SyncChip() {
   const s = useSync();
   const text = !s.configured ? 'Sync da configurare' : s.busy ? 'Sincronizzo' : s.pending ? `${s.pending} in coda` : 'Salvato';
   const tone = !s.configured ? 'off' : s.pending ? 'wait' : 'ok';
-  return <a className={`sync ${tone}`} href="#/impostazioni">{text}</a>;
+  return <Link className={`sync ${tone}`} to="#/impostazioni">{text}</Link>;
 }
 
-export function Home({ sessions, draft, onStart, onDiscard, toast }: {
-  sessions: StoredSession[]; draft: Session | null; toast: string | null; onDiscard: () => void;
+export function Home({ sessions, draft, onStart, onDiscard, toast, onToastUsed }: {
+  sessions: StoredSession[]; draft: Session | null; toast: { text: string; health?: string } | null; onDiscard: () => void; onToastUsed: () => void;
   onStart: (p: ProgramId, part: Part, loc: Location) => void;
 }) {
   const today = new Date();
@@ -30,14 +32,19 @@ export function Home({ sessions, draft, onStart, onDiscard, toast }: {
 
   return (
     <div className="screen with-nav">
-      <div className="top"><p className="t-label">{head}</p><SyncChip /></div>
+      <div className="top"><p className="t-label">{head}</p><span className="top-r"><SyncChip /><ThemeToggle /></span></div>
       <h1 className="t-display day">{cap(fmtToday.format(today))}<br />{fmtDate.format(today)}</h1>
-      {toast && <p className="toast" role="status">{toast}</p>}
+      {toast && (
+        <div className="toast" role="status">
+          <span>{toast.text}</span>
+          {toast.health && <a className="btn ink" href={toast.health} onClick={onToastUsed}>Aggiungi a Salute</a>}
+        </div>
+      )}
 
       {draft && (
         <div className="resume">
           <span><b>Seduta aperta</b><small>{draft.program} · {partLabel(draft.part)}</small></span>
-          <a className="btn ink" href="#/seduta">Riprendi</a>
+          <Link className="btn ink" to="#/seduta">Riprendi</Link>
           <DangerButton label="Scarta" confirmLabel="Tocca ancora per scartarla" onConfirm={onDiscard} />
         </div>
       )}
@@ -66,7 +73,7 @@ export function Home({ sessions, draft, onStart, onDiscard, toast }: {
         <p className="t-label">{program.weekly.palestra} in palestra, {program.weekly.casa} a casa, {program.weekly.riposo} giorno di riposo</p>
       </section>
 
-      <a className="all" href="#/programma">Tutto il programma<Icon name="chev" /></a>
+      <Link className="all" to="#/programma">Tutto il programma<Icon name="chev" /></Link>
     </div>
   );
 }

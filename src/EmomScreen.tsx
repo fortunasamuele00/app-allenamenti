@@ -4,6 +4,7 @@ import { describeLast, getProgram, lastExercise } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, Session, SetLog, StoredSession } from './types';
 import { DangerButton, GuideSheet, Icon, NameButton, NumField, ReadyBadge, Sheet, TextField, TopBar, type GuideRef } from './ui';
+import { go } from './nav';
 
 type Phase = 'ready' | 'run' | 'pause' | 'done';
 
@@ -63,7 +64,7 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
     const cardio = cardioIdx >= 0 ? draft.exercises[cardioIdx] : null;
     return (
       <div className="screen">
-        <TopBar title={`${draft.program} · EMOM ${totalMin}'`} onBack={() => { location.hash = '#/'; }} />
+        <TopBar title={`${draft.program} · EMOM ${totalMin}'`} onBack={() => { go('#/'); }} />
         <h1 className="t-display sum-h">Com'è andata</h1>
         <p className="t-label">Ripetizioni per giro. Correggi quello che serve, poi salva.</p>
         {exs.map((ex) => {
@@ -112,7 +113,7 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
       <div className="emom-top">
         <p className="t-head">{draft.program} · EMOM {totalMin}'</p>
         <button type="button" onClick={() => {
-          if (phase === 'ready') location.hash = '#/'; else setStopping(true);
+          if (phase === 'ready') go('#/'); else setStopping(true);
         }}>{phase === 'ready' ? 'Esci' : 'Termina'}</button>
       </div>
       <div className="panel">

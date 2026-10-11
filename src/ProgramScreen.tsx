@@ -2,6 +2,7 @@ import { lastSession, nextProgram, program, shortDay } from './program';
 import { readyToProgress } from './progression';
 import type { Location, Part, ProgramId, StoredSession } from './types';
 import { Icon, ReadyBadge, TopBar } from './ui';
+import { go } from './nav';
 
 const fmt = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'short' });
 const range = `${fmt.format(new Date(program.start + 'T00:00:00'))} – ${fmt.format(new Date(program.end + 'T00:00:00'))}`.replace(/\./g, '');
@@ -10,7 +11,7 @@ export function ProgramScreen({ sessions, onStart }: { sessions: StoredSession[]
   const next = { forza: nextProgram(sessions, 'forza'), emom: nextProgram(sessions, 'emom') };
   return (
     <div className="screen with-nav">
-      <TopBar title="Programma" onBack={() => { location.hash = '#/'; }} />
+      <TopBar title="Programma" onBack={() => { go('#/'); }} />
       <div className="prog-h"><p className="t-label">{range}</p><h1 className="t-display">{program.name}</h1></div>
       {program.programs.map((p) => {
         const ready = [

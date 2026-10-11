@@ -17,7 +17,7 @@ const dbp = openDB<Schema>('allenamenti', 1, {
   },
 });
 
-export const defaultSettings: Settings = { owner: '', repo: 'allenamenti-data', token: '', restForza: 120, restWarmup: 30, restByExercise: {} };
+export const defaultSettings: Settings = { owner: '', repo: 'allenamenti-data', token: '', restForza: 120, restWarmup: 30, restByExercise: {}, health: false };
 
 export const db = {
   async sessions() { return (await dbp).getAll('sessions'); },
