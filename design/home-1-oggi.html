@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Home 1 · Oggi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="gesso.css">
+<style>
+.day{margin:8px 0 20px}
+.go{padding:20px;border-radius:var(--r-lg);background:var(--surface)}
+.go+.go{margin-top:8px}
+.go.casa{background:var(--surface-2)}
+.go-k{display:flex;align-items:center;gap:8px;font:500 13px/1 var(--font-body);color:var(--text-2)}
+.go-k .ic{width:20px;height:20px}
+.go h4{display:flex;align-items:baseline;gap:10px;margin:12px 0 4px;font:500 28px/1.1 var(--font-display);letter-spacing:-.02em}
+.go h4 b{font-weight:500;color:var(--accent-ink)}
+.go-m{font-size:15px;color:var(--text-2)}
+.go-l{margin:12px 0 16px;padding-top:12px;border-top:1px solid var(--line-2);font-size:15px;line-height:1.5}
+.go .btn{width:100%}
+.week{margin-top:24px}
+.week-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.week-h span{font:500 16px/1 var(--font-display);font-variant-numeric:tabular-nums}
+.caps{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.caps i{height:16px;border-radius:var(--r-full);background:var(--line)}
+.caps i.d{background:var(--accent)}
+.week p{margin-top:8px}
+.all{display:flex;justify-content:space-between;align-items:center;width:100%;min-height:56px;margin-top:16px;padding:0 16px 0 20px;border-radius:var(--r-full);background:var(--surface);font-weight:500}
+.all .ic{color:var(--text-3)}
+</style>
+</head>
+<body data-theme="light">
+<div class="d-wrap">
+  <header class="d-top">
+    <nav class="d-nav" aria-label="Homepage">
+      <a href="home-1-oggi.html" aria-current="page">1 · Oggi</a>
+      <a href="home-2-programma.html">2 · Programma</a>
+      <a href="home-3-diario.html">3 · Diario</a>
+    </nav>
+    <button class="d-toggle" type="button">Tema</button>
+  </header>
+  <h1 class="t-display">Oggi</h1>
+  <p class="d-lede">Risponde a una domanda sola: cosa faccio oggi. Due schede, una per la palestra e una per casa, ognuna con la seduta che tocca nella sua rotazione A → B → C e il pulsante per iniziare. Il resto del programma sta dietro un tocco.</p>
+  <p class="d-fonts">Design system Gesso. Stato di esempio: mercoledì 21 ottobre, settimana 2, otto sedute già fatte. <a href="2-gesso.html" style="color:inherit">Torna al design system</a></p>
+  <section class="d-sec">
+    <div class="d-frames">
+      <div class="frame is-light" data-theme="light"></div>
+      <div class="frame is-dark" data-theme="dark"></div>
+    </div>
+  </section>
+</div>
+<template id="components">
+  <div class="screen">
+    <div class="top"><p class="t-label">Meso 1 · settimana 2 di 4</p><p class="sync">Salvato</p></div>
+    <h3 class="t-display day">Mercoledì<br>21 ottobre</h3>
+    <article class="go">
+      <p class="go-k"><svg class="ic"><use href="#i-gym"/></svg>In palestra tocca a</p>
+      <h4><b>B</b>Spinta + spalle</h4>
+      <p class="go-m">Parte 1 · warm-up + forza · circa 35'</p>
+      <p class="go-l">Panca piana 4 × 8 · Arnold press 4 × 10 · Chest press 3 × 12</p>
+      <button class="btn pri" type="button">Inizia in palestra</button>
+    </article>
+    <article class="go casa">
+      <p class="go-k"><svg class="ic"><use href="#i-home"/></svg>A casa tocca a</p>
+      <h4><b>B</b>Spinta + spalle</h4>
+      <p class="go-m">Parte 2 · EMOM 20' + stretching · circa 25'</p>
+      <p class="go-l">Burpee · Thruster con elastico · Crunch · Alzata frontale con elastico</p>
+      <button class="btn ink" type="button">Inizia a casa</button>
+    </article>
+    <section class="week">
+      <div class="week-h"><h4 class="t-head">Questa settimana</h4><span>2 di 6</span></div>
+      <div class="caps" role="img" aria-label="2 sedute fatte su 6"><i class="d"></i><i class="d"></i><i></i><i></i><i></i><i></i></div>
+      <p class="t-label">3 in palestra, 3 a casa, 1 giorno di riposo</p>
+    </section>
+    <button class="all" type="button">Tutto il programma<svg class="ic"><use href="#i-chev"/></svg></button>
+  </div>
+  <div class="foot">
+    <ul class="nav">
+      <li><a href="#" aria-current="page"><svg class="ic"><use href="#i-rows"/></svg>Programma</a></li>
+      <li><a href="#"><svg class="ic"><use href="#i-chart"/></svg>Storico</a></li>
+      <li><a href="#"><svg class="ic"><use href="#i-sliders"/></svg>Impostazioni</a></li>
+    </ul>
+  </div>
+</template>
+<script src="shell.js"></script>
+</body>
+</html>

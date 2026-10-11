@@ -1,0 +1,165 @@
+{
+  "id": "meso1",
+  "name": "Meso 1",
+  "start": "2026-10-11",
+  "end": "2026-11-07",
+  "source": "Salute e Fitness Resources/allenamento/2026-10_Meso1_Casa_o_Palestra.md",
+  "convertedAt": "2026-10-10",
+  "notes": [
+    "Conversione una tantum dal file del coach. Nessuna riga tolta dalle tabelle dei programmi A, B e C.",
+    "Lasciati fuori perché non sono esercizi: la tabella degli orari della mattina, le regole EMOM e cardio, l'ancoraggio degli elastici, la palestra sotto casa, gli attrezzi in casa.",
+    "Lo stretching Mézières di 5' compare nell'app come promemoria a fine Parte 2 e non viene registrato.",
+    "Il plank del warm-up A (30'' centrale + 30'' lato dx + 30'' lato sx) è diviso in tre righe a tempo.",
+    "substitution: true = sostituzione di Samuele per mancanza di pesi (il segno ✎ nel file), non del coach."
+  ],
+  "weekly": { "palestra": 3, "casa": 3, "riposo": 1 },
+  "defaults": { "restForza": 120, "restWarmup": 30 },
+  "programs": [
+    {
+      "id": "A",
+      "name": "Gambe",
+      "forza": {
+        "minutes": 35,
+        "warmup": {
+          "rounds": 3,
+          "restSec": 30,
+          "exercises": [
+            { "id": "a-wu-squat", "name": "Squat", "type": "corpo_rip", "target": "15" },
+            { "id": "a-wu-affondi", "name": "Affondi", "type": "corpo_rip", "target": "10" },
+            { "id": "a-wu-plank-centrale", "name": "Plank centrale", "type": "tempo", "target": "30''", "seconds": 30 },
+            { "id": "a-wu-plank-dx", "name": "Plank lato dx", "type": "tempo", "target": "30''", "seconds": 30 },
+            { "id": "a-wu-plank-sx", "name": "Plank lato sx", "type": "tempo", "target": "30''", "seconds": 30 }
+          ]
+        },
+        "exercises": [
+          {
+            "id": "a-squat",
+            "sets": 4,
+            "palestra": { "name": "Squat", "type": "peso_rip", "target": "8" },
+            "casa": { "name": "Squat bulgaro", "type": "elastico_rip", "target": "8 per gamba", "substitution": true, "note": "Piede dietro sul puff appoggiato al muro, o su una sedia; elastico sotto il piede davanti per carico." }
+          },
+          {
+            "id": "a-hip-thrust",
+            "sets": 3,
+            "palestra": { "name": "Hip thrust", "type": "peso_rip", "target": "10" },
+            "casa": { "name": "Hip thrust con elastico", "type": "elastico_rip", "target": "10-15", "substitution": true, "note": "Spalle sul puff appoggiato al muro, elastico teso sulla piega delle anche e maniglie premute a terra con le mani ai lati dei fianchi; 2'' di pausa in alto. Se 15 sono facili: monopodalico. Se il puff scivola: ponte glutei da terra, stesso elastico." }
+          },
+          {
+            "id": "a-leg-curl",
+            "sets": 4,
+            "palestra": { "name": "Leg curl seduto", "type": "peso_rip", "target": "12" },
+            "casa": { "name": "Leg curl con asciugamano", "type": "corpo_rip", "target": "12", "substitution": true, "note": "Sul pavimento, pancia in su, talloni sull'asciugamano, bacino alto." }
+          }
+        ]
+      },
+      "emom": {
+        "minutes": 20,
+        "rounds": 5,
+        "exercises": [
+          { "id": "a-emom-squat", "name": "Squat con elastico", "coach": "Goblet squat", "type": "elastico_rip", "target": "12-15", "substitution": true },
+          { "id": "a-emom-step-up", "name": "Step up su sedia o gradino", "coach": "Step up", "type": "corpo_rip", "target": "8 per gamba" },
+          { "id": "a-emom-piegamenti", "name": "Piegamenti", "coach": "Piegamenti", "type": "corpo_rip", "target": "10-12" },
+          { "id": "a-emom-curl", "name": "Curl a martello con elastico", "coach": "Curl a martello", "type": "elastico_rip", "target": "12-15", "substitution": true }
+        ],
+        "stretching": "Stretching Mézières 5'",
+        "cardio": { "id": "a-cardio", "name": "Step-up", "minutes": 15, "note": "Solo se non arrivi a 12.500 passi." }
+      }
+    },
+    {
+      "id": "B",
+      "name": "Spinta + spalle",
+      "forza": {
+        "minutes": 35,
+        "warmup": {
+          "rounds": 3,
+          "restSec": 30,
+          "exercises": [
+            { "id": "b-wu-plank", "name": "Plank", "type": "tempo", "target": "1'", "seconds": 60 },
+            { "id": "b-wu-diamante", "name": "Piegamenti diamante", "type": "corpo_rip", "target": "10" },
+            { "id": "b-wu-plank-inverso", "name": "Plank inverso", "type": "tempo", "target": "30''", "seconds": 30 }
+          ]
+        },
+        "exercises": [
+          {
+            "id": "b-panca",
+            "sets": 4,
+            "palestra": { "name": "Panca piana", "type": "peso_rip", "target": "8" },
+            "casa": { "name": "Piegamenti con elastico dietro la schiena", "type": "elastico_rip", "target": "8", "substitution": true, "note": "Senza elastico se ne fai meno di 12 puliti." }
+          },
+          {
+            "id": "b-arnold",
+            "sets": 4,
+            "palestra": { "name": "Arnold press", "type": "peso_rip", "target": "10" },
+            "casa": { "name": "Arnold press con elastico in piedi", "type": "elastico_rip", "target": "10", "substitution": true, "note": "Elastico sotto i piedi, maniglie davanti alle spalle coi palmi verso di te, ruoti e spingi sopra la testa." }
+          },
+          {
+            "id": "b-chest-press",
+            "sets": 3,
+            "palestra": { "name": "Chest press", "type": "peso_rip", "target": "12" },
+            "casa": { "name": "Chest press con elastico", "type": "elastico_rip", "target": "12", "substitution": true, "note": "Elastico ancorato alla porta, di spalle alla porta." }
+          }
+        ]
+      },
+      "emom": {
+        "minutes": 20,
+        "rounds": 5,
+        "exercises": [
+          { "id": "b-emom-burpee", "name": "Burpee", "coach": "Burpee", "type": "corpo_rip", "target": "8" },
+          { "id": "b-emom-thruster", "name": "Thruster con elastico", "coach": "Thruster kettlebell", "type": "elastico_rip", "target": "10-12", "substitution": true, "note": "Elastico sotto i piedi, squat + spinta sopra la testa." },
+          { "id": "b-emom-crunch", "name": "Crunch", "coach": "Crunch", "type": "corpo_rip", "target": "15-20" },
+          { "id": "b-emom-alzata-frontale", "name": "Alzata frontale con elastico", "coach": "Alzata frontale", "type": "elastico_rip", "target": "12-15", "substitution": true }
+        ],
+        "stretching": "Stretching Mézières 5'",
+        "cardio": { "id": "b-cardio", "name": "Step-up", "minutes": 16, "note": "Solo se non arrivi a 12.500 passi." }
+      }
+    },
+    {
+      "id": "C",
+      "name": "Tirata + catena posteriore",
+      "forza": {
+        "minutes": 35,
+        "warmup": {
+          "rounds": 3,
+          "restSec": 30,
+          "exercises": [
+            { "id": "c-wu-squat", "name": "Squat", "type": "corpo_rip", "target": "20" },
+            { "id": "c-wu-mountain-climber", "name": "Mountain climber", "type": "corpo_rip", "target": "20" },
+            { "id": "c-wu-hollow-rock", "name": "Hollow rock", "type": "corpo_rip", "target": "3" }
+          ]
+        },
+        "exercises": [
+          {
+            "id": "c-stacco",
+            "sets": 4,
+            "palestra": { "name": "Stacco da terra", "type": "peso_rip", "target": "10" },
+            "casa": { "name": "Stacco rumeno con elastico", "type": "elastico_rip", "target": "10", "substitution": true, "note": "Elastico doppio sotto i piedi." }
+          },
+          {
+            "id": "c-lat-pulldown",
+            "sets": 4,
+            "palestra": { "name": "Lat pulldown", "type": "peso_rip", "target": "10" },
+            "casa": { "name": "Lat pulldown con elastico", "type": "elastico_rip", "target": "10", "substitution": true, "note": "Elastico ancorato in alto alla porta, in ginocchio." }
+          },
+          {
+            "id": "c-rematore",
+            "sets": 3,
+            "palestra": { "name": "Rematore inclinato", "type": "peso_rip", "target": "12" },
+            "casa": { "name": "Rematore con elastico", "type": "elastico_rip", "target": "12", "substitution": true, "note": "Elastico ancorato a metà porta." }
+          }
+        ]
+      },
+      "emom": {
+        "minutes": 20,
+        "rounds": 5,
+        "exercises": [
+          { "id": "c-emom-affondi", "name": "Affondi con elastico sopra la testa", "coach": "Affondi sopra la testa", "type": "elastico_rip", "target": "8 per gamba", "substitution": true, "note": "Elastico teso sopra la testa." },
+          { "id": "c-emom-alzata-frontale", "name": "Alzata frontale con elastico, presa unita", "coach": "Alzata frontale con disco", "type": "elastico_rip", "target": "12-15", "substitution": true },
+          { "id": "c-emom-hollow-hold", "name": "Hollow hold a terra", "coach": "L-sit hold", "type": "tempo", "target": "20-30''", "substitution": true, "note": "Schiena incollata al pavimento, gambe e spalle sollevate; ginocchia piegate se serve." },
+          { "id": "c-emom-alzate-laterali", "name": "Alzate laterali con elastico", "coach": "Aperture laterali con manubri", "type": "elastico_rip", "target": "15", "substitution": true }
+        ],
+        "stretching": "Stretching Mézières 5'",
+        "cardio": { "id": "c-cardio", "name": "Step-up", "minutes": 12, "note": "Solo se non arrivi a 12.500 passi." }
+      }
+    }
+  ]
+}

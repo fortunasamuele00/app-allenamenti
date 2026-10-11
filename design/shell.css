@@ -1,0 +1,61 @@
+/* Cornice comune alle tre pagine di direzione: impaginazione del documento,
+   non lo stile dei componenti (quello sta in ogni pagina). */
+:root{--s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px}
+*{box-sizing:border-box;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;touch-action:manipulation}
+h1,h2,h3,h4,p{font-weight:inherit;font-size:inherit}
+:focus-visible{outline:2px solid var(--accent-ink);outline-offset:2px}
+
+.d-wrap{max-width:836px;margin:0 auto;padding:var(--s4) var(--s4) 96px}
+.d-top{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);margin-bottom:var(--s6)}
+.d-nav{display:flex;gap:var(--s1)}
+.d-nav a,.d-toggle{display:inline-flex;align-items:center;min-height:48px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:500;color:var(--text-2);text-decoration:none}
+.d-nav a[aria-current]{background:var(--text);color:var(--bg)}
+.d-toggle{border:1px solid var(--line-2);color:var(--text)}
+.d-lede{max-width:56ch;margin-top:var(--s3);color:var(--text-2)}
+.d-fonts{margin-top:var(--s2);font-size:14px;color:var(--text-3)}
+.d-sec{margin-top:var(--s7)}
+.d-h2{font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2);padding-bottom:var(--s3);margin-bottom:var(--s4);border-bottom:1px solid var(--line)}
+
+.d-pals{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:var(--s4)}
+.d-pal{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:20px;padding:var(--s4)}
+.d-pal>b{display:block;font-size:14px;font-weight:600;margin-bottom:var(--s3)}
+.d-sw{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:var(--s3);padding:6px 0;font-size:14px}
+.d-sw i{width:40px;height:40px;border-radius:10px;border:1px solid var(--line-2)}
+.d-sw code{font-family:inherit;color:var(--text-2);font-variant-numeric:tabular-nums}
+
+.d-type>div{display:grid;gap:2px;padding:var(--s3) 0;border-bottom:1px solid var(--line)}
+.d-type small{font-size:13px;color:var(--text-3)}
+.d-type .t-label{color:var(--text)}
+.d-type .t-num{font-size:56px}
+
+.d-space{display:grid;gap:var(--s2);margin-bottom:var(--s5)}
+.d-space div{display:grid;grid-template-columns:72px 1fr;align-items:center;font-size:14px;color:var(--text-2)}
+.d-space i{height:12px;background:var(--text);border-radius:2px}
+.d-radius{display:flex;flex-wrap:wrap;gap:var(--s4);font-size:14px;color:var(--text-2)}
+.d-radius i{display:block;width:72px;height:72px;margin-bottom:var(--s2);border:1.5px solid var(--text);background:var(--surface)}
+
+.d-frames{display:grid;grid-template-columns:repeat(2,390px);gap:var(--s5);justify-content:center}
+.frame{background:var(--bg);color:var(--text);border:1px solid var(--line);border-radius:28px;overflow:hidden;min-width:0}
+.cmp+.cmp{border-top:1px solid var(--line)}
+.cmp-cap{padding:var(--s4) var(--s4) 0;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+.cmp-cap small{display:block;font-weight:400;letter-spacing:0;text-transform:none;margin-top:2px}
+.cmp-body{padding:var(--s4)}
+@media (max-width:859px){
+  .d-frames{grid-template-columns:minmax(0,390px)}
+  body[data-theme=light] .frame.is-dark,body[data-theme=dark] .frame.is-light{display:none}
+}
+@media (max-width:430px){
+  .d-frames{margin:0 calc(var(--s4) * -1);grid-template-columns:minmax(0,1fr)}
+  .frame{border-radius:0;border-left:0;border-right:0}
+}
+
+/* Basi dei componenti: solo meccanica, niente aspetto. */
+.ic{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:var(--ic-w,2);stroke-linecap:round;stroke-linejoin:round;flex:none}
+.frame input{font:inherit;color:inherit;background:none;border:0;outline:0;width:100%;min-width:0;text-align:center;padding:0;border-radius:0}
+.frame small{font-size:inherit}
+.stage{position:relative;overflow:hidden}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media (prefers-reduced-motion:no-preference){.set *,.chk{transition:background-color .18s ease-out,border-color .18s ease-out,color .18s ease-out}}

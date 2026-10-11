@@ -1,0 +1,44 @@
+/* Direzione scelta: Gesso. Token, tipografia e pezzi comuni alle tre homepage. */
+:root{
+  --font-display:"Outfit",system-ui,sans-serif;
+  --font-body:"Inter",system-ui,sans-serif;
+  --r-sm:14px;--r-md:20px;--r-lg:28px;--r-full:999px;--ic-w:1.75;
+}
+[data-theme=light]{
+  --bg:#ECEDF0;--surface:#FAFAFB;--surface-2:#DDE4F2;--home:#C6D3F0;--cell:#E2E5EB;--line:#D5D8DF;--line-2:#A9AEBA;
+  --text:#101114;--text-2:#565B66;--text-3:#7B808B;
+  --accent:#EA5A1B;--on-accent:#140802;--accent-soft:#FBE3D6;--accent-ink:#B5410C;
+  --ok:#1B7F56;--dock:#101114;--on-dock:#FAFAFB;--dock-2:#2A2C32;
+}
+[data-theme=dark]{
+  --bg:#111214;--surface:#1B1D21;--surface-2:#222A3B;--home:#34425F;--cell:#272A30;--line:#2D3037;--line-2:#585D68;
+  --text:#F3F3F1;--text-2:#A3A7B0;--text-3:#7C808A;
+  --accent:#FF6A2B;--on-accent:#140802;--accent-soft:#3B2114;--accent-ink:#FF8A57;
+  --ok:#5FD3A0;--dock:#F3F3F1;--on-dock:#101114;--dock-2:#D9DADC;
+}
+.t-display{font:500 36px/1.1 var(--font-display);letter-spacing:-.03em}
+.t-title{font:500 22px/1.25 var(--font-display);letter-spacing:-.015em}
+.t-head{font:500 16px/1.35 var(--font-body);letter-spacing:-.01em}
+.t-body{font:400 16px/1.55 var(--font-body);letter-spacing:-.01em}
+.t-label{font:500 13px/1.3 var(--font-body);color:var(--text-2)}
+
+.frame{overflow:clip}
+.screen{padding:8px 16px 24px;min-height:680px}
+.top{display:flex;justify-content:space-between;align-items:center;min-height:48px}
+.sync{display:inline-flex;align-items:center;gap:6px;font:500 13px/1 var(--font-body);color:var(--text-2)}
+.sync::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 24px;border-radius:var(--r-full);font-weight:500;border:1.5px solid var(--line-2)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn.ink{background:var(--text);border-color:var(--text);color:var(--bg)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 8px;border-radius:var(--r-full);background:color-mix(in srgb,var(--ok) 16%,transparent);color:var(--ok);font:500 13px/1.2 var(--font-body)}
+.badge .ic{width:16px;height:16px;stroke-width:2.25}
+
+.foot{position:sticky;bottom:0;padding:24px 12px 12px;background:linear-gradient(transparent,var(--bg) 36px)}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);margin:0;padding:6px;list-style:none;border-radius:var(--r-full);background:var(--surface);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.1)}
+.nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;height:56px;border-radius:var(--r-full);font:500 12px/1 var(--font-body);color:var(--text-2);text-decoration:none}
+.nav a[aria-current]{background:var(--text);color:var(--bg)}
+.nav .ic{width:22px;height:22px}
+
+/* Intestazione del documento: le pillole non vanno a capo sul telefono. */
+.d-top{flex-wrap:wrap}
+.d-nav a,.d-toggle{white-space:nowrap}

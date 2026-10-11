@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Home 3 · Diario</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<link rel="stylesheet" href="gesso.css">
+<style>
+.cal-card{margin-top:8px;padding:16px;border-radius:var(--r-lg);background:var(--surface)}
+.cal-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.cal-h span{font:500 16px/1 var(--font-display);color:var(--text-2);font-variant-numeric:tabular-nums}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal em{font:500 12px/1 var(--font-body);font-style:normal;text-align:center;color:var(--text-3);padding-bottom:4px}
+.cal span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:60px;border-radius:var(--r-full);background:var(--cell);font:400 12px/1 var(--font-body);color:var(--text-2);font-variant-numeric:tabular-nums}
+.cal b{font:500 17px/1 var(--font-display);color:inherit}
+.cal .g{background:var(--accent);color:var(--on-accent)}
+.cal .h{background:var(--home);color:var(--text)}
+.cal .t{background:none;box-shadow:inset 0 0 0 1.5px var(--text);color:var(--text)}
+.key{display:flex;gap:16px;margin-top:16px}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.key i.h{background:var(--home)}
+.key i.t{background:none;box-shadow:inset 0 0 0 1.5px var(--text)}
+.log-h{margin:24px 0 8px}
+.log{border-radius:var(--r-lg);background:var(--surface);overflow:hidden}
+.log button{display:grid;grid-template-columns:44px 1fr 24px;gap:12px;align-items:center;width:100%;min-height:72px;padding:12px 12px 12px 14px;text-align:left}
+.log button+button{border-top:1px solid var(--line)}
+.log i{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--on-accent);font:500 18px/1 var(--font-display);font-style:normal}
+.log i.h{background:var(--home);color:var(--text)}
+.log b{display:block;font:500 16px/1.3 var(--font-body);letter-spacing:-.01em}
+.log small{font-size:13px;color:var(--text-2)}
+.log .badge{margin-top:6px}
+.log .ic:last-child{color:var(--text-3)}
+.next{margin-bottom:8px;padding:16px;border-radius:var(--r-lg);background:var(--dock);color:var(--on-dock);box-shadow:0 12px 32px rgba(0,0,0,.28)}
+.next p{font:400 13px/1.3 var(--font-body);opacity:.72}
+.next h4{font:500 22px/1.2 var(--font-display);letter-spacing:-.015em}
+.next div{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.next button{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:var(--r-full);background:var(--dock-2);font-weight:500}
+.next button:first-child{background:var(--accent);color:var(--on-accent)}
+.next .ic{width:20px;height:20px}
+</style>
+</head>
+<body data-theme="light">
+<div class="d-wrap">
+  <header class="d-top">
+    <nav class="d-nav" aria-label="Homepage">
+      <a href="home-1-oggi.html">1 · Oggi</a>
+      <a href="home-2-programma.html">2 · Programma</a>
+      <a href="home-3-diario.html" aria-current="page">3 · Diario</a>
+    </nav>
+    <button class="d-toggle" type="button">Tema</button>
+  </header>
+  <h1 class="t-display">Diario</h1>
+  <p class="d-lede">Parte da quello che hai già fatto: il calendario delle quattro settimane con una capsula per giorno, arancione in palestra e azzurra a casa, e sotto le ultime sedute con il badge di progressione. La prossima seduta resta ancorata in basso, sotto il pollice.</p>
+  <p class="d-fonts">Design system Gesso. Stato di esempio: mercoledì 21 ottobre, settimana 2, otto sedute già fatte. <a href="2-gesso.html" style="color:inherit">Torna al design system</a></p>
+  <section class="d-sec">
+    <div class="d-frames">
+      <div class="frame is-light" data-theme="light"></div>
+      <div class="frame is-dark" data-theme="dark"></div>
+    </div>
+  </section>
+</div>
+<template id="components">
+  <div class="screen">
+    <div class="top"><p class="t-label">Settimana 2 di 4</p><p class="sync">Salvato</p></div>
+    <section class="cal-card">
+      <div class="cal-h"><h3 class="t-title">Meso 1</h3><span>8 sedute</span></div>
+      <div class="cal" role="img" aria-label="Calendario del blocco: 8 sedute fatte, oggi è il 21 ottobre"><em>D</em><em>L</em><em>M</em><em>M</em><em>G</em><em>V</em><em>S</em><span>11</span><span class="g">12<b>A</b></span><span class="h">13<b>A</b></span><span class="g">14<b>B</b></span><span class="h">15<b>B</b></span><span class="g">16<b>C</b></span><span class="h">17<b>C</b></span><span>18</span><span class="g">19<b>A</b></span><span class="h">20<b>A</b></span><span class="t">21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span><span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
+      <p class="key t-label"><span><i></i>Palestra</span><span><i class="h"></i>Casa</span><span><i class="t"></i>Oggi</span></p>
+    </section>
+    <h3 class="t-head log-h">Ultime sedute</h3>
+    <div class="log">
+      <button type="button"><i class="h">A</i><span><b>Parte 2 · EMOM 20'</b><small>Mar 20 ott · casa · 26 min</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+      <button type="button"><i>A</i><span><b>Parte 1 · Warm-up + forza</b><small>Lun 19 ott · palestra · 34 min</small><br><span class="badge"><svg class="ic"><use href="#i-up"/></svg>Hip thrust: pronto a salire</span></span><svg class="ic"><use href="#i-chev"/></svg></button>
+      <button type="button"><i class="h">C</i><span><b>Parte 2 · EMOM 20'</b><small>Sab 17 ott · casa · 25 min</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+    </div>
+  </div>
+  <div class="foot">
+    <section class="next" aria-label="Prossima seduta">
+      <p>Tocca a</p><h4>B · Spinta + spalle</h4>
+      <div><button type="button"><svg class="ic"><use href="#i-gym"/></svg>Palestra</button><button type="button"><svg class="ic"><use href="#i-home"/></svg>Casa</button></div>
+    </section>
+    <ul class="nav">
+      <li><a href="#" aria-current="page"><svg class="ic"><use href="#i-rows"/></svg>Programma</a></li>
+      <li><a href="#"><svg class="ic"><use href="#i-chart"/></svg>Storico</a></li>
+      <li><a href="#"><svg class="ic"><use href="#i-sliders"/></svg>Impostazioni</a></li>
+    </ul>
+  </div>
+</template>
+<script src="shell.js"></script>
+</body>
+</html>

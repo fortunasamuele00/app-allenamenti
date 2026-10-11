@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Direzione 1 · Ghisa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shell.css">
+<style>
+/* ---------- Token ---------- */
+:root{
+  --font-display:"Google Sans Flex","Google Sans",system-ui,sans-serif;
+  --font-body:"Google Sans Flex","Google Sans",system-ui,sans-serif;
+  --r-sm:14px;--r-md:20px;--r-lg:28px;--r-full:999px;--ic-w:2;
+}
+[data-theme=light]{
+  --bg:#F2F2EF;--surface:#FFFFFF;--surface-2:#E8E8E4;--line:#D6D6D1;--line-2:#9C9C96;
+  --text:#111112;--text-2:#55554F;--text-3:#7A7A74;
+  --accent:#111112;--on-accent:#FFFFFF;--accent-soft:#E8E8E4;--accent-ink:#111112;
+  --ok:#157A43;--scrim:rgba(17,17,18,.5);
+}
+[data-theme=dark]{
+  --bg:#000000;--surface:#131314;--surface-2:#1E1E20;--line:#2A2A2D;--line-2:#5C5C61;
+  --text:#F4F4F1;--text-2:#A6A6A1;--text-3:#7C7C77;
+  --accent:#F4F4F1;--on-accent:#0B0B0C;--accent-soft:#1E1E20;--accent-ink:#F4F4F1;
+  --ok:#62D694;--scrim:rgba(0,0,0,.66);
+}
+
+/* ---------- Tipografia ---------- */
+.t-display{font:600 34px/1.1 var(--font-display);letter-spacing:-.02em}
+.t-title{font:600 22px/1.2 var(--font-display);letter-spacing:-.01em}
+.t-head{font:500 17px/1.3 var(--font-body)}
+.t-body{font:400 16px/1.5 var(--font-body)}
+.t-label{font:500 13px/1.3 var(--font-body);letter-spacing:.01em;color:var(--text-2)}
+.t-num{font:500 96px/1 var(--font-display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+
+/* ---------- Riga serie: tratteggiato = previsto, pieno = fatto ---------- */
+.set{display:grid;grid-template-columns:28px 1fr 1fr 52px;gap:8px;align-items:center}
+.set+.set{margin-top:8px}
+.set.wide{grid-template-columns:28px 1.5fr 1fr 52px}
+.set.one{grid-template-columns:28px 1fr 52px}
+.set .n{text-align:center;font-weight:600;color:var(--text-3);font-variant-numeric:tabular-nums}
+.f{position:relative;display:flex;align-items:center;height:56px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm)}
+.f i{position:absolute;left:10px;top:6px;font:500 12px/1 var(--font-body);font-style:normal;color:var(--text-2)}
+.f input{font:600 22px/1 var(--font-display);font-variant-numeric:tabular-nums;height:100%;padding-top:10px}
+.f:focus-within,.set.now .f{border-style:solid;border-color:var(--text)}
+.chk{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;border:1.5px dashed var(--line-2);color:var(--text-3)}
+.set.now .chk{border-style:solid;border-color:var(--text);color:var(--text)}
+.set.done .f,.set.done .chk{background:var(--accent);border:1.5px solid var(--accent);color:var(--on-accent)}
+.set.done .f i{color:inherit;opacity:.7}
+.set.done .n{color:var(--text)}
+.kind{margin:20px 0 8px}
+.kind:first-child{margin-top:0}
+
+/* ---------- Scheda esercizio ---------- */
+.ex{background:var(--surface);border-radius:var(--r-lg);padding:16px}
+.ex+.ex{margin-top:12px}
+.ex-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.ex-h span{color:var(--text-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin:12px 0;padding:4px;background:var(--surface-2);border-radius:var(--r-full)}
+.seg button{height:48px;border-radius:var(--r-full);font-weight:500;color:var(--text-2)}
+.seg button[aria-pressed=true]{background:var(--surface);color:var(--text)}
+.last{display:flex;justify-content:space-between;gap:12px;padding:12px 0;margin-bottom:12px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.last span{color:var(--text-2)}
+.ex-f{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 20px;border-radius:var(--r-full);font-weight:600;background:var(--surface-2)}
+.btn.pri{background:var(--accent);color:var(--on-accent)}
+.badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:6px 12px 6px 8px;border-radius:var(--r-full);border:1.5px solid var(--ok);color:var(--ok);font:600 13px/1.2 var(--font-body)}
+.badge .ic{width:16px;height:16px;stroke-width:2.5}
+
+/* ---------- Timer di recupero (foglio dal basso) ---------- */
+.rest{height:470px;background:var(--bg)}
+.rest .under{padding:16px;opacity:.5}
+.scrim{position:absolute;inset:0;background:var(--scrim)}
+.sheet{position:absolute;left:0;right:0;bottom:0;padding:12px 16px 20px;background:var(--surface);border-radius:var(--r-lg) var(--r-lg) 0 0;text-align:center}
+.sheet::before{content:"";display:block;width:40px;height:4px;margin:0 auto 16px;border-radius:2px;background:var(--line-2)}
+.sheet .t-num{margin:8px 0 16px}
+.bar{height:4px;border-radius:2px;background:var(--surface-2);overflow:hidden}
+.bar b{display:block;height:100%;background:var(--text);border-radius:2px}
+.ctl{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:8px;margin:16px 0 12px}
+
+/* ---------- EMOM a schermo intero ---------- */
+.emom{height:720px;display:flex;flex-direction:column;padding:16px;background:var(--bg)}
+.emom-top{display:flex;justify-content:space-between;align-items:center}
+.emom-top button{min-height:48px;padding:0 4px;font-weight:500;color:var(--text-2)}
+.emom-clock{margin:16px 0 4px}
+.emom .now-ex{margin-top:20px}
+.emom .now-ex h4{font:600 34px/1.1 var(--font-display);letter-spacing:-.02em}
+.emom .now-ex p{font-size:20px;color:var(--text-2)}
+.next-ex{display:flex;justify-content:space-between;gap:12px;margin-top:16px;padding:14px 16px;border:1.5px dashed var(--line-2);border-radius:var(--r-md)}
+.next-ex b{font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:auto}
+.grid i{height:18px;border-radius:var(--r-full);border:1.5px dashed var(--line-2)}
+.grid i.d{background:var(--text);border:1.5px solid var(--text)}
+.grid i.n{border:1.5px solid var(--text);background:linear-gradient(90deg,var(--text) 37%,transparent 37%)}
+.grid-cap{display:flex;justify-content:space-between;margin:8px 0 16px}
+.round{display:flex;justify-content:space-between;align-items:center;min-height:48px;margin-bottom:12px;padding:0 4px 0 16px;border-radius:var(--r-full);background:var(--surface);font-variant-numeric:tabular-nums}
+.round button{min-height:48px;padding:0 14px;font-weight:600}
+
+/* ---------- Lista sedute ---------- */
+.prog-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.day{background:var(--surface);border-radius:var(--r-lg);padding:16px 16px 4px}
+.day+.day{margin-top:12px}
+.day-h{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.tag{display:grid;place-items:center;width:48px;height:48px;border:1.5px dashed var(--line-2);border-radius:var(--r-sm);font:600 22px/1 var(--font-display)}
+.part{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;min-height:64px;text-align:left;border-top:1px solid var(--line)}
+.part b{display:block;font-weight:500}
+.part small{font-size:14px;color:var(--text-2)}
+.part .ic{color:var(--text-3)}
+</style>
+</head>
+<body data-theme="light">
+<div class="d-wrap">
+  <header class="d-top">
+    <nav class="d-nav" aria-label="Direzioni">
+      <a href="1-ghisa.html" aria-current="page">1 · Ghisa</a>
+      <a href="2-gesso.html">2 · Gesso</a>
+      <a href="3-volt.html">3 · Volt</a>
+    </nav>
+    <button class="d-toggle" type="button">Tema</button>
+  </header>
+
+  <h1 class="t-display">Ghisa</h1>
+  <p class="d-lede">Bianco e nero, nessun colore d'accento. Una sola regola visiva: tratteggiato vuol dire previsto, pieno vuol dire fatto. Vale per le serie, per i minuti dell'EMOM e per le sedute.</p>
+  <p class="d-fonts">Google Sans Flex (token antigravity) per tutto, numeri tabulari.</p>
+
+  <section class="d-sec"><h2 class="d-h2">Palette</h2>
+    <div class="d-pals"><div class="d-pal" data-theme="light"></div><div class="d-pal" data-theme="dark"></div></div>
+  </section>
+
+  <section class="d-sec"><h2 class="d-h2">Scala tipografica</h2>
+    <div class="d-type">
+      <div data-cls="t-num" data-name="Timer" data-size="96" data-sample="1:24"></div>
+      <div data-cls="t-display" data-name="Display" data-sample="Meso 1"></div>
+      <div data-cls="t-title" data-name="Titolo" data-sample="Squat bulgaro"></div>
+      <div data-cls="t-head" data-name="Voce" data-sample="Parte 1 · Warm-up + forza"></div>
+      <div data-cls="t-body" data-name="Testo" data-sample="Piede dietro sul puff appoggiato al muro."></div>
+      <div data-cls="t-label" data-name="Etichetta" data-sample="Ultima volta"></div>
+    </div>
+  </section>
+
+  <section class="d-sec"><h2 class="d-h2">Spaziature e raggi</h2>
+    <div class="d-space"></div>
+    <div class="d-radius" data-r="sm:Campo,md:Riquadro,lg:Scheda"></div>
+  </section>
+
+  <section class="d-sec"><h2 class="d-h2">Componenti</h2>
+    <div class="d-frames">
+      <div class="frame is-light" data-theme="light"></div>
+      <div class="frame is-dark" data-theme="dark"></div>
+    </div>
+  </section>
+</div>
+
+<template id="components">
+  <section class="cmp">
+    <h3 class="cmp-cap">Riga serie <small>Tocca il cerchio per segnare la serie.</small></h3>
+    <div class="cmp-body">
+      <p class="t-label kind">Peso e ripetizioni · Squat</p>
+      <div class="set done"><span class="n">1</span>
+        <label class="f"><i>kg</i><input inputmode="decimal" value="60" aria-label="Chili"></label>
+        <label class="f"><i>rip</i><input inputmode="numeric" value="8" aria-label="Ripetizioni"></label>
+        <button class="chk" type="button" data-check aria-pressed="true" aria-label="Serie 1 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+      <div class="set now"><span class="n">2</span>
+        <label class="f"><i>kg</i><input inputmode="decimal" value="60" aria-label="Chili"></label>
+        <label class="f"><i>rip</i><input inputmode="numeric" value="8" aria-label="Ripetizioni"></label>
+        <button class="chk" type="button" data-check aria-pressed="false" aria-label="Serie 2 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+
+      <p class="t-label kind">Elastico e ripetizioni · Curl a martello con elastico</p>
+      <div class="set wide"><span class="n">1</span>
+        <label class="f"><i>elastico</i><input value="medio" aria-label="Livello dell'elastico"></label>
+        <label class="f"><i>rip</i><input inputmode="numeric" value="12" aria-label="Ripetizioni"></label>
+        <button class="chk" type="button" data-check aria-pressed="false" aria-label="Serie 1 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+
+      <p class="t-label kind">Tempo · Plank centrale</p>
+      <div class="set one"><span class="n">1</span>
+        <label class="f"><i>secondi</i><input inputmode="numeric" value="30" aria-label="Secondi"></label>
+        <button class="chk" type="button" data-check aria-pressed="false" aria-label="Serie 1 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+    </div>
+  </section>
+
+  <section class="cmp">
+    <h3 class="cmp-cap">Scheda esercizio <small>Carichi di esempio: il log è ancora vuoto.</small></h3>
+    <div class="cmp-body">
+      <article class="ex">
+        <div class="ex-h"><h4 class="t-title">Squat</h4><span>4 × 8 · rec. 120"</span></div>
+        <div class="seg" role="group" aria-label="Variante"><button type="button" aria-pressed="true">Palestra</button><button type="button" aria-pressed="false">Casa</button></div>
+        <p class="last"><span>Ultima volta</span>60 kg × 8 · 8 · 8 · 7</p>
+        <div class="set done"><span class="n">1</span><label class="f"><i>kg</i><input inputmode="decimal" value="60" aria-label="Chili"></label><label class="f"><i>rip</i><input inputmode="numeric" value="8" aria-label="Ripetizioni"></label><button class="chk" type="button" data-check aria-pressed="true" aria-label="Serie 1 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+        <div class="set done"><span class="n">2</span><label class="f"><i>kg</i><input inputmode="decimal" value="60" aria-label="Chili"></label><label class="f"><i>rip</i><input inputmode="numeric" value="8" aria-label="Ripetizioni"></label><button class="chk" type="button" data-check aria-pressed="true" aria-label="Serie 2 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+        <div class="set now"><span class="n">3</span><label class="f"><i>kg</i><input inputmode="decimal" value="60" aria-label="Chili"></label><label class="f"><i>rip</i><input inputmode="numeric" value="8" aria-label="Ripetizioni"></label><button class="chk" type="button" data-check aria-pressed="false" aria-label="Serie 3 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+        <div class="set"><span class="n">4</span><label class="f"><i>kg</i><input inputmode="decimal" value="60" aria-label="Chili"></label><label class="f"><i>rip</i><input inputmode="numeric" value="8" aria-label="Ripetizioni"></label><button class="chk" type="button" data-check aria-pressed="false" aria-label="Serie 4 fatta"><svg class="ic"><use href="#i-check"/></svg></button></div>
+        <div class="ex-f"><button class="btn" type="button"><svg class="ic"><use href="#i-plus"/></svg>Serie</button><button class="btn" type="button"><svg class="ic"><use href="#i-minus"/></svg>Serie</button></div>
+      </article>
+      <article class="ex">
+        <div class="ex-h"><h4 class="t-title">Hip thrust</h4><span>3 × 10 · rec. 120"</span></div>
+        <p class="last" style="margin:12px 0 0;border-bottom:0;padding-bottom:0"><span>Ultima volta</span>80 kg × 10 · 10 · 12</p>
+        <span class="badge"><svg class="ic"><use href="#i-up"/></svg>Pronto a salire</span>
+      </article>
+    </div>
+  </section>
+
+  <section class="cmp">
+    <h3 class="cmp-cap">Timer di recupero <small>Parte quando segni la serie.</small></h3>
+    <div class="stage rest">
+      <div class="under">
+        <div class="ex-h" style="margin-bottom:12px"><h4 class="t-title">Squat</h4><span>4 × 8</span></div>
+        <div class="set done"><span class="n">1</span><span class="f"></span><span class="f"></span><span class="chk"></span></div>
+        <div class="set done"><span class="n">2</span><span class="f"></span><span class="f"></span><span class="chk"></span></div>
+      </div>
+      <div class="scrim"></div>
+      <div class="sheet" role="dialog" aria-label="Recupero">
+        <p class="t-label">Recupero · Squat, serie 2 di 4 fatta</p>
+        <p class="t-num">1:24</p>
+        <div class="bar"><b style="width:70%"></b></div>
+        <div class="ctl">
+          <button class="btn" type="button">−15"</button>
+          <button class="btn pri" type="button"><svg class="ic"><use href="#i-skip"/></svg>Salta</button>
+          <button class="btn" type="button">+15"</button>
+        </div>
+        <p class="t-label">Poi serie 3 · 60 kg × 8</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cmp">
+    <h3 class="cmp-cap">Timer EMOM <small>Schermo intero. Una riga della griglia è un giro.</small></h3>
+    <div class="stage emom">
+      <div class="emom-top"><p class="t-head">A · EMOM 20'</p><button type="button">Termina</button></div>
+      <p class="t-num emom-clock">0:38</p>
+      <p class="t-label">Minuto 7 di 20 · giro 2 di 5</p>
+      <div class="now-ex"><p class="t-label">Ora</p><h4>Piegamenti</h4><p>10-12</p></div>
+      <div class="next-ex"><span><span class="t-label">Poi</span><br><b>Curl a martello con elastico</b></span><span class="t-label">12-15</span></div>
+      <div class="grid" role="img" aria-label="Fatti 6 minuti su 20">
+        <i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i>
+        <i class="d"></i><i class="d"></i><i class="n"></i><i></i>
+        <i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i>
+      </div>
+      <div class="grid-cap t-label"><span>5 giri × 4 esercizi</span><span>6 di 20</span></div>
+      <div class="round"><span><span class="t-label">Giro 1</span>&ensp;15 · 8 · 12 · 14</span><button type="button">Modifica</button></div>
+      <button class="btn pri" type="button"><svg class="ic"><use href="#i-pause"/></svg>Pausa</button>
+    </div>
+  </section>
+
+  <section class="cmp">
+    <h3 class="cmp-cap">Lista delle sedute</h3>
+    <div class="cmp-body">
+      <div class="prog-h"><h4 class="t-display">Meso 1</h4><p class="t-label">11 ott – 7 nov</p></div>
+      <article class="day">
+        <div class="day-h"><span class="tag">A</span><h5 class="t-title">Gambe</h5></div>
+        <button class="part" type="button"><span><b>Parte 1 · Warm-up + forza</b><small>Palestra · circa 35'</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+        <button class="part" type="button"><span><b>Parte 2 · EMOM 20' + stretching</b><small>Casa · circa 25'</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+      </article>
+      <article class="day">
+        <div class="day-h"><span class="tag">B</span><h5 class="t-title">Spinta + spalle</h5></div>
+        <button class="part" type="button"><span><b>Parte 1 · Warm-up + forza</b><small>Palestra · circa 35'</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+        <button class="part" type="button"><span><b>Parte 2 · EMOM 20' + stretching</b><small>Casa · circa 25'</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+      </article>
+      <article class="day">
+        <div class="day-h"><span class="tag">C</span><h5 class="t-title">Tirata + catena posteriore</h5></div>
+        <button class="part" type="button"><span><b>Parte 1 · Warm-up + forza</b><small>Palestra · circa 35'</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+        <button class="part" type="button"><span><b>Parte 2 · EMOM 20' + stretching</b><small>Casa · circa 25'</small></span><svg class="ic"><use href="#i-chev"/></svg></button>
+      </article>
+    </div>
+  </section>
+</template>
+<script src="shell.js"></script>
+</body>
+</html>

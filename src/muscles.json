@@ -1,0 +1,27 @@
+{
+  "_note": "Attribuzione dei gruppi muscolari principali scritta da Claude il 2026-10-11 per il grafico a ragnatela. Non viene dal file del coach. Vale per entrambe le varianti (palestra e casa) dello stesso esercizio.",
+  "groups": ["Petto", "Schiena", "Spalle", "Braccia", "Core", "Gambe"],
+  "byExercise": {
+    "a-squat": ["Gambe"],
+    "a-hip-thrust": ["Gambe"],
+    "a-leg-curl": ["Gambe"],
+    "a-emom-squat": ["Gambe"],
+    "a-emom-step-up": ["Gambe"],
+    "a-emom-piegamenti": ["Petto", "Braccia"],
+    "a-emom-curl": ["Braccia"],
+    "b-panca": ["Petto", "Braccia"],
+    "b-arnold": ["Spalle"],
+    "b-chest-press": ["Petto"],
+    "b-emom-burpee": ["Gambe", "Petto", "Core"],
+    "b-emom-thruster": ["Gambe", "Spalle"],
+    "b-emom-crunch": ["Core"],
+    "b-emom-alzata-frontale": ["Spalle"],
+    "c-stacco": ["Schiena", "Gambe"],
+    "c-lat-pulldown": ["Schiena", "Braccia"],
+    "c-rematore": ["Schiena", "Braccia"],
+    "c-emom-affondi": ["Gambe", "Spalle"],
+    "c-emom-alzata-frontale": ["Spalle"],
+    "c-emom-hollow-hold": ["Core"],
+    "c-emom-alzate-laterali": ["Spalle"]
+  }
+}
