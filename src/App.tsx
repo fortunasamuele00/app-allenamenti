@@ -21,6 +21,7 @@ const TABS: { href: string; label: string; icon: IconName }[] = [
 export function App() {
   const hash = useRoute();
   const [ready, setReady] = useState(false);
+  const [bootError, setBootError] = useState<string | null>(null);
   const [sessions, setSessions] = useState<StoredSession[]>([]);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const [draft, setDraftState] = useState<Session | null>(null);
@@ -33,8 +34,14 @@ export function App() {
   useEffect(() => { void reload(); }, [pending, reload]);
   useEffect(() => {
     void (async () => {
-      const [s, st, d] = await Promise.all([db.sessions(), db.settings(), db.draft()]);
-      setSessions(s); setSettings(st); setDraftState(d); setReady(true);
+      // Se i dati salvati non si leggono, l'app parte lo stesso e lo dice, invece di restare vuota.
+      try {
+        const [s, st, d] = await Promise.all([db.sessions(), db.settings(), db.draft()]);
+        setSessions(s); setSettings(st); setDraftState(d);
+      } catch (e) {
+        setBootError(e instanceof Error ? e.message : String(e));
+      }
+      setReady(true);
       await refreshSync();
       void flush().then(reload);
     })();
@@ -96,6 +103,7 @@ export function App() {
   const current = hash === '#/programma' ? '#/' : hash;
   return (
     <div className="app">
+      {bootError && <p className="boot-err" role="alert">Non riesco a leggere i dati salvati su questo telefono ({bootError}). Chiudi l'app e riaprila; se succede ancora, dimmelo.</p>}
       {view}
       {pendingStart && (
         <Sheet title="Hai una seduta aperta" onClose={() => setPendingStart(null)}>

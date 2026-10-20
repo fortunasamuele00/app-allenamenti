@@ -5,6 +5,8 @@ import { VitePWA } from 'vite-plugin-pwa';
 // base relativa: la stessa build funziona in locale e su GitHub Pages sotto /app-allenamenti/.
 export default defineConfig({
   base: './',
+  // Anche iPhone con iOS non aggiornatissimo: sintassi compatibile con Safari 15.
+  build: { target: ['es2020', 'safari15'] },
   server: { allowedHosts: true },
   preview: { allowedHosts: true },
   plugins: [
