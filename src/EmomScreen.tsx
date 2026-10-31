@@ -8,6 +8,9 @@ import { go } from './nav';
 
 type Phase = 'ready' | 'run' | 'pause' | 'done';
 
+/** Tempo in più per preparare l'elastico, prima del primo esercizio con elastico di ogni giro. */
+const SETUP_MS = 10000;
+
 function RoundField({ ex, set, onChange, unit }: { ex: ExLog; set: SetLog; onChange: (p: Partial<SetLog>) => void; unit: string }) {
   return ex.type === 'tempo'
     ? <NumField value={set.seconds} onChange={(seconds) => onChange({ seconds })} unit={unit} label={`${ex.name}, secondi`} />
@@ -22,7 +25,13 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
   const def = getProgram(draft.program).emom;
   const exs = draft.exercises.filter((e) => e.block === 'emom');
   const cardioIdx = draft.exercises.findIndex((e) => e.block === 'cardio');
-  const n = exs.length, totalMin = def.minutes, totalMs = totalMin * 60000;
+  const n = exs.length, totalMin = def.minutes;
+  const isBand = (m: number) => exs[m % n].type === 'elastico_rip';
+  const setupMs = (m: number) => (isBand(m) && (m === 0 || !isBand(m - 1)) ? SETUP_MS : 0);
+  // Inizio di ogni minuto, setup compreso; l'ultima voce è la durata totale.
+  const starts = [0];
+  for (let m = 0; m < totalMin; m++) starts.push(starts[m] + setupMs(m) + 60000);
+  const totalMs = starts[totalMin];
 
   // Se l'app viene riaperta a seduta già avviata, si riparte dal riepilogo.
   const [phase, setPhase] = useState<Phase>(exs.some((e) => e.sets.some((s) => s.done)) ? 'done' : 'ready');
@@ -31,7 +40,8 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
   const [editRound, setEditRound] = useState<number | null>(null);
   const [guide, setGuide] = useState<GuideRef | null>(null);
   const [stopping, setStopping] = useState(false);
-  const guideOf = (id: string): GuideRef => { const e = def.exercises.find((x) => x.id === id)!; return { key: id, name: e.name, note: e.note, coach: e.coach }; };
+  // Una seduta già iniziata può avere esercizi che nel frattempo sono usciti dal programma.
+  const guideOf = (id: string): GuideRef => { const e = def.exercises.find((x) => x.id === id); return { key: id, name: e?.name ?? exs.find((x) => x.id === id)!.name, note: e?.note, coach: e?.coach }; };
   const now = useNow(phase === 'run');
   useWakeLock(phase !== 'done');
 
@@ -41,8 +51,17 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
   const patch = (exId: string, r: number, p: Partial<SetLog>) => update((d) => { Object.assign(d.exercises.find((e) => e.id === exId)!.sets[r], p); });
 
   const elapsed = Math.min(totalMs, acc + (phase === 'run' ? Math.max(0, now - t0) : 0));
-  const minute = Math.min(totalMin - 1, Math.floor(elapsed / 60000));
+  let minute = 0;
+  while (minute < totalMin - 1 && starts[minute + 1] <= elapsed) minute++;
+  const inSetup = elapsed - starts[minute] < setupMs(minute);
   const marked = useRef(0);
+  const wasSetup = useRef(false);
+
+  // Finito il setup, due bip: si comincia.
+  useEffect(() => {
+    if (phase === 'run' && wasSetup.current && !inSetup) beep(2);
+    wasSetup.current = inSetup;
+  }, [inSetup, phase]);
 
   // Scorre da solo: a ogni cambio di minuto suona, e il minuto appena finito risulta fatto.
   useEffect(() => {
@@ -105,7 +124,8 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
 
   const cur = exs[minute % n], next = minute + 1 < totalMin ? exs[(minute + 1) % n] : null;
   const round = Math.floor(minute / n);
-  const inMinute = (elapsed - minute * 60000) / 1000;
+  const inMinute = inSetup ? 0 : (elapsed - starts[minute] - setupMs(minute)) / 1000;
+  const setupLeft = (starts[minute] + setupMs(minute) - elapsed) / 1000;
   const lastRound = round - 1;
 
   return (
@@ -116,9 +136,9 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
           if (phase === 'ready') go('#/'); else setStopping(true);
         }}>{phase === 'ready' ? 'Esci' : 'Termina'}</button>
       </div>
-      <div className="panel">
-        <p className="t-label">Minuto {minute + 1} di {totalMin} · giro {round + 1} di {def.rounds}</p>
-        <p className="t-num" role="timer">{clock(60 - inMinute)}</p>
+      <div className={`panel${inSetup ? ' setup' : ''}`}>
+        <p className="t-label">{inSetup ? "Prepara l'elastico" : `Minuto ${minute + 1} di ${totalMin}`} · giro {round + 1} di {def.rounds}</p>
+        <p className="t-num" role="timer">{clock(inSetup ? setupLeft : 60 - inMinute)}</p>
         <h1><NameButton guide={guideOf(cur.id)} onOpen={setGuide} /></h1><p>{cur.target}</p>
       </div>
       <div className="next-ex">

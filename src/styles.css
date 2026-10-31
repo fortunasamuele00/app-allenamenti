@@ -184,21 +184,25 @@ input, textarea, select { font: inherit; color: inherit; }
 .round-row small { display: block; font-size: 13px; font-weight: 400; color: var(--text-2); }
 
 /* ---------- EMOM ---------- */
-.screen.emom { display: flex; flex-direction: column; min-height: 100dvh; }
-.emom-top { display: flex; justify-content: space-between; align-items: center; }
-.emom-top button { min-height: 48px; padding: 0 4px; font-weight: 500; color: var(--text-2); }
-.panel { margin-top: 8px; padding: 20px; border-radius: var(--r-lg); background: var(--surface-2); }
-.panel .t-num { margin: 4px 0 16px; }
-.panel h1 { font: 500 30px/1.1 var(--font-display); letter-spacing: -.02em; }
-.panel h1 + p { font: 400 20px/1.3 var(--font-display); color: var(--text-2); }
-.next-ex { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 72px; margin: 8px 0 24px; padding: 14px 20px; border-radius: var(--r-md); background: var(--surface); }
-.mins { display: flex; justify-content: space-between; margin-top: auto; }
+.screen.emom { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow-y: auto; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+.emom-top { display: flex; flex: none; justify-content: space-between; align-items: center; }
+.emom-top button { min-height: 44px; padding: 0 4px; font-weight: 500; color: var(--text-2); }
+/* Tutto in una schermata: il pannello cede spazio in base all'altezza del telefono. */
+.panel { flex: none; padding: clamp(12px, 2.4dvh, 20px); border-radius: var(--r-lg); background: var(--surface-2); }
+.panel.setup { background: var(--accent-soft); }
+.panel .t-num { margin: 2px 0 clamp(4px, 1.4dvh, 16px); font-size: clamp(60px, 13dvh, 104px); }
+.panel h1 { font: 500 clamp(22px, 3.6dvh, 30px)/1.1 var(--font-display); letter-spacing: -.02em; }
+.panel h1 .namebtn { min-height: 0; padding: 4px 0; }
+.panel h1 + p { font: 400 clamp(16px, 2.4dvh, 20px)/1.3 var(--font-display); color: var(--text-2); }
+.next-ex { display: flex; flex: none; justify-content: space-between; align-items: center; gap: 12px; margin: 8px 0; padding: clamp(8px, 1.4dvh, 14px) 20px; border-radius: var(--r-md); background: var(--surface); }
+.mins { display: flex; flex: none; justify-content: space-between; margin-top: auto; }
 .mins div { display: flex; gap: 5px; }
-.mins i { width: 10px; height: 48px; border-radius: var(--r-full); background: var(--line); }
+.mins i { width: 10px; height: clamp(24px, 5dvh, 48px); border-radius: var(--r-full); background: var(--line); }
 .mins i.d { background: var(--accent); }
-.mins-cap { display: flex; justify-content: space-between; margin: 8px 0 16px; }
-.round { display: flex; justify-content: space-between; align-items: center; min-height: 52px; margin-bottom: 8px; padding: 0 6px 0 20px; border-radius: var(--r-full); background: var(--surface); font-variant-numeric: tabular-nums; }
+.mins-cap { display: flex; flex: none; justify-content: space-between; margin: 4px 0 8px; }
+.round { display: flex; flex: none; justify-content: space-between; align-items: center; min-height: 48px; padding: 0 6px 0 20px; border-radius: var(--r-full); background: var(--surface); font-variant-numeric: tabular-nums; }
 .round button { min-height: 48px; padding: 0 14px; font-weight: 500; color: var(--accent-ink); }
+.screen.emom > .btn, .screen.emom > .link { flex: none; }
 .sum-h { margin: 8px 0; }
 .sum-h + p { margin-bottom: 16px; }
 .band { margin-bottom: 8px; }

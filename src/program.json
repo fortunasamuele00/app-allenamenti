@@ -10,7 +10,8 @@
     "Lasciati fuori perché non sono esercizi: la tabella degli orari della mattina, le regole EMOM e cardio, l'ancoraggio degli elastici, la palestra sotto casa, gli attrezzi in casa.",
     "Lo stretching Mézières di 5' compare nell'app come promemoria a fine Parte 2 e non viene registrato.",
     "Il plank del warm-up A (30'' centrale + 30'' lato dx + 30'' lato sx) è diviso in tre righe a tempo.",
-    "substitution: true = sostituzione di Samuele per mancanza di pesi (il segno ✎ nel file), non del coach."
+    "substitution: true = sostituzione di Samuele per mancanza di pesi (il segno ✎ nel file), non del coach.",
+    "EMOM, modifiche di Samuele del 2026-10-31 rispetto al file del coach: gli esercizi con elastico stanno di seguito in ogni giro; nel programma C affondi con elastico sopra la testa e alzata frontale sono sostituiti perché l'elastico è aperto e l'alzata frontale è già nel B."
   ],
   "weekly": { "palestra": 3, "casa": 3, "riposo": 1 },
   "defaults": { "restForza": 120, "restWarmup": 30 },
@@ -57,9 +58,9 @@
         "rounds": 5,
         "exercises": [
           { "id": "a-emom-squat", "name": "Squat con elastico", "coach": "Goblet squat", "type": "elastico_rip", "target": "12-15", "substitution": true },
+          { "id": "a-emom-curl", "name": "Curl a martello con elastico", "coach": "Curl a martello", "type": "elastico_rip", "target": "12-15", "substitution": true },
           { "id": "a-emom-step-up", "name": "Step up su sedia o gradino", "coach": "Step up", "type": "corpo_rip", "target": "8 per gamba" },
-          { "id": "a-emom-piegamenti", "name": "Piegamenti", "coach": "Piegamenti", "type": "corpo_rip", "target": "10-12" },
-          { "id": "a-emom-curl", "name": "Curl a martello con elastico", "coach": "Curl a martello", "type": "elastico_rip", "target": "12-15", "substitution": true }
+          { "id": "a-emom-piegamenti", "name": "Piegamenti", "coach": "Piegamenti", "type": "corpo_rip", "target": "10-12" }
         ],
         "stretching": "Stretching Mézières 5'",
         "cardio": { "id": "a-cardio", "name": "Step-up", "minutes": 15, "note": "Solo se non arrivi a 12.500 passi." }
@@ -104,10 +105,10 @@
         "minutes": 20,
         "rounds": 5,
         "exercises": [
-          { "id": "b-emom-burpee", "name": "Burpee", "coach": "Burpee", "type": "corpo_rip", "target": "8" },
           { "id": "b-emom-thruster", "name": "Thruster con elastico", "coach": "Thruster kettlebell", "type": "elastico_rip", "target": "10-12", "substitution": true, "note": "Elastico sotto i piedi, squat + spinta sopra la testa." },
-          { "id": "b-emom-crunch", "name": "Crunch", "coach": "Crunch", "type": "corpo_rip", "target": "15-20" },
-          { "id": "b-emom-alzata-frontale", "name": "Alzata frontale con elastico", "coach": "Alzata frontale", "type": "elastico_rip", "target": "12-15", "substitution": true }
+          { "id": "b-emom-alzata-frontale", "name": "Alzata frontale con elastico", "coach": "Alzata frontale", "type": "elastico_rip", "target": "12-15", "substitution": true },
+          { "id": "b-emom-burpee", "name": "Burpee", "coach": "Burpee", "type": "corpo_rip", "target": "8" },
+          { "id": "b-emom-crunch", "name": "Crunch", "coach": "Crunch", "type": "corpo_rip", "target": "15-20" }
         ],
         "stretching": "Stretching Mézières 5'",
         "cardio": { "id": "b-cardio", "name": "Step-up", "minutes": 16, "note": "Solo se non arrivi a 12.500 passi." }
@@ -152,10 +153,10 @@
         "minutes": 20,
         "rounds": 5,
         "exercises": [
-          { "id": "c-emom-affondi", "name": "Affondi con elastico sopra la testa", "coach": "Affondi sopra la testa", "type": "elastico_rip", "target": "8 per gamba", "substitution": true, "note": "Elastico teso sopra la testa." },
-          { "id": "c-emom-alzata-frontale", "name": "Alzata frontale con elastico, presa unita", "coach": "Alzata frontale con disco", "type": "elastico_rip", "target": "12-15", "substitution": true },
-          { "id": "c-emom-hollow-hold", "name": "Hollow hold a terra", "coach": "L-sit hold", "type": "tempo", "target": "20-30''", "substitution": true, "note": "Schiena incollata al pavimento, gambe e spalle sollevate; ginocchia piegate se serve." },
-          { "id": "c-emom-alzate-laterali", "name": "Alzate laterali con elastico", "coach": "Aperture laterali con manubri", "type": "elastico_rip", "target": "15", "substitution": true }
+          { "id": "c-emom-alzate-posteriori", "name": "Alzate posteriori con elastico", "coach": "Alzata frontale con disco", "type": "elastico_rip", "target": "12-15", "substitution": true, "note": "Elastico sotto i piedi, busto inclinato in avanti, apri le braccia di lato." },
+          { "id": "c-emom-alzate-laterali", "name": "Alzate laterali con elastico", "coach": "Aperture laterali con manubri", "type": "elastico_rip", "target": "15", "substitution": true },
+          { "id": "c-emom-affondi-braccia-alte", "name": "Affondi con braccia sopra la testa", "coach": "Affondi sopra la testa", "type": "corpo_rip", "target": "10 per gamba", "substitution": true, "note": "Senza elastico: braccia tese in alto per tutta la serie." },
+          { "id": "c-emom-hollow-hold", "name": "Hollow hold a terra", "coach": "L-sit hold", "type": "tempo", "target": "20-30''", "substitution": true, "note": "Schiena incollata al pavimento, gambe e spalle sollevate; ginocchia piegate se serve." }
         ],
         "stretching": "Stretching Mézières 5'",
         "cardio": { "id": "c-cardio", "name": "Step-up", "minutes": 12, "note": "Solo se non arrivi a 12.500 passi." }

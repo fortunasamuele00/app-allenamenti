@@ -4,18 +4,23 @@ let ctx: AudioContext | null = null;
 /** Da chiamare dentro un tocco: iOS fa suonare solo dopo un gesto dell'utente. */
 export function unlockAudio() {
   try {
+    // Di default iOS ammutolisce il Web Audio con l'interruttore silenzioso: 'playback' lo fa suonare comunque.
+    const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+    if (session) session.type = 'playback';
     ctx ??= new AudioContext();
-    if (ctx.state === 'suspended') void ctx.resume();
+    if (ctx.state !== 'running') void ctx.resume();
   } catch { /* niente audio su questo dispositivo */ }
 }
 export function beep(times = 1, freq = 880) {
   if (!ctx) return;
+  // iOS può sospendere l'audio dopo un'interruzione, anche a pagina aperta.
+  if (ctx.state !== 'running') void ctx.resume();
   for (let i = 0; i < times; i++) {
     const t = ctx.currentTime + i * 0.28;
     const osc = ctx.createOscillator(), gain = ctx.createGain();
     osc.frequency.value = freq;
     gain.gain.setValueAtTime(0.0001, t);
-    gain.gain.exponentialRampToValueAtTime(0.5, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.9, t + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
     osc.connect(gain).connect(ctx.destination);
     osc.start(t); osc.stop(t + 0.24);

@@ -37,7 +37,9 @@ export function App() {
       // Se i dati salvati non si leggono, l'app parte lo stesso e lo dice, invece di restare vuota.
       try {
         const [s, st, d] = await Promise.all([db.sessions(), db.settings(), db.draft()]);
-        setSessions(s); setSettings(st); setDraftState(d);
+        // Un EMOM aperto ma mai partito prende esercizi e ordine aggiornati del programma.
+        const stale = d?.part === 'emom' && !d.exercises.some((e) => e.sets.some((x) => x.done));
+        setSessions(s); setSettings(st); setDraftState(stale ? newSession(d.program, 'emom', 'casa', s, st) : d);
       } catch (e) {
         setBootError(e instanceof Error ? e.message : String(e));
       }

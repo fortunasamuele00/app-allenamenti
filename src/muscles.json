@@ -21,6 +21,8 @@
     "c-rematore": ["Schiena", "Braccia"],
     "c-emom-affondi": ["Gambe", "Spalle"],
     "c-emom-alzata-frontale": ["Spalle"],
+    "c-emom-affondi-braccia-alte": ["Gambe", "Spalle"],
+    "c-emom-alzate-posteriori": ["Spalle", "Schiena"],
     "c-emom-hollow-hold": ["Core"],
     "c-emom-alzate-laterali": ["Spalle"]
   }
