@@ -121,10 +121,15 @@ export function newSession(prog: ProgramId, part: Part, location: Location, sess
   return { date: localDate(now), program: prog, part, location: part === 'emom' ? 'casa' : location, startedAt: now.toISOString(), endedAt: null, exercises, notes: '' };
 }
 
-/** Apre il Comando rapido che registra l'allenamento in Salute, passandogli la durata in minuti. */
+/** Il Comando rapido registra l'allenamento a partire da adesso: va aperto all'inizio, con la durata prevista in minuti. */
+const STRETCHING_MIN = 5;
 export const HEALTH_SHORTCUT: Record<Part, string> = { forza: 'Salute forza', emom: 'Salute EMOM' };
+export function plannedMinutes(s: Session): number {
+  const def = getProgram(s.program);
+  return s.part === 'forza' ? def.forza.minutes : def.emom.minutes + STRETCHING_MIN;
+}
 export function healthUrl(s: Session): string {
-  return `shortcuts://run-shortcut?name=${encodeURIComponent(HEALTH_SHORTCUT[s.part])}&input=text&text=${minutesOf(s) ?? 1}`;
+  return `shortcuts://run-shortcut?name=${encodeURIComponent(HEALTH_SHORTCUT[s.part])}&input=text&text=${plannedMinutes(s)}`;
 }
 
 export const sessionId = (s: Session) => `${s.date}_${s.program}_${s.part}`;

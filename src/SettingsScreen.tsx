@@ -38,10 +38,10 @@ export function SettingsScreen({ settings, saveSettings }: { settings: Settings;
 
       <section className="ex">
         <h2 className="t-title">Salute</h2>
-        <p className="note">Un'app web non può scrivere in Salute da sola. Lo fa un Comando rapido: a seduta salvata compare "Aggiungi a Salute", che lo apre con la durata. Carichi e ripetizioni restano qui e su GitHub.</p>
+        <p className="note">Un'app web non può scrivere in Salute da sola. Lo fa un Comando rapido: all'inizio della seduta compare "Aggiungi a Salute", che lo apre con la durata prevista. Carichi e ripetizioni restano qui e su GitHub.</p>
         <label className="switch">
           <input type="checkbox" checked={form.health} onChange={async (e) => { const next = { ...form, health: e.target.checked }; setForm(next); await saveSettings({ ...settings, health: next.health }); }} />
-          <span>Proponi "Aggiungi a Salute" dopo ogni seduta</span>
+          <span>Proponi "Aggiungi a Salute" all'inizio di ogni seduta</span>
         </label>
         <p className="t-label">Da fare una volta, nell'app Comandi rapidi:</p>
         <ol className="guide-how">

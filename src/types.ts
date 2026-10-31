@@ -87,6 +87,6 @@ export interface Settings {
   restForza: number;
   restWarmup: number;
   restByExercise: Record<string, number>;
-  /** Dopo il salvataggio propone il Comando rapido che registra l'allenamento in Salute. */
+  /** All'inizio della seduta propone il Comando rapido che registra l'allenamento in Salute. */
   health: boolean;
 }

@@ -17,8 +17,8 @@ export function SyncChip() {
   return <Link className={`sync ${tone}`} to="#/impostazioni">{text}</Link>;
 }
 
-export function Home({ sessions, draft, onStart, onDiscard, toast, onToastUsed }: {
-  sessions: StoredSession[]; draft: Session | null; toast: { text: string; health?: string } | null; onDiscard: () => void; onToastUsed: () => void;
+export function Home({ sessions, draft, onStart, onDiscard, toast }: {
+  sessions: StoredSession[]; draft: Session | null; toast: string | null; onDiscard: () => void;
   onStart: (p: ProgramId, part: Part, loc: Location) => void;
 }) {
   const today = new Date();
@@ -36,8 +36,7 @@ export function Home({ sessions, draft, onStart, onDiscard, toast, onToastUsed }
       <h1 className="t-display day">{cap(fmtToday.format(today))}<br />{fmtDate.format(today)}</h1>
       {toast && (
         <div className="toast" role="status">
-          <span>{toast.text}</span>
-          {toast.health && <a className="btn ink" href={toast.health} onClick={onToastUsed}>Aggiungi a Salute</a>}
+          <span>{toast}</span>
         </div>
       )}
 

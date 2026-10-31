@@ -3,7 +3,7 @@ import { db, defaultSettings } from './db';
 import { EmomScreen } from './EmomScreen';
 import { History, SessionDetail } from './History';
 import { Home } from './Home';
-import { healthUrl, newSession, sessionId } from './program';
+import { healthUrl, newSession, plannedMinutes, sessionId } from './program';
 import { ProgramScreen } from './ProgramScreen';
 import { SessionScreen } from './SessionScreen';
 import { SettingsScreen } from './SettingsScreen';
@@ -25,7 +25,8 @@ export function App() {
   const [sessions, setSessions] = useState<StoredSession[]>([]);
   const [settings, setSettings] = useState<Settings>(defaultSettings);
   const [draft, setDraftState] = useState<Session | null>(null);
-  const [toast, setToast] = useState<{ text: string; health?: string } | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  const [healthAsk, setHealthAsk] = useState<Session | null>(null);
   const [pendingStart, setPendingStart] = useState<[ProgramId, Part, Location] | null>(null);
 
   const reload = useCallback(async () => setSessions(await db.sessions()), []);
@@ -58,7 +59,9 @@ export function App() {
   const begin = (p: ProgramId, part: Part, loc: Location) => {
     setPendingStart(null);
     setToast(null);
-    setDraft(newSession(p, part, loc, sessions, settings));
+    const s = newSession(p, part, loc, sessions, settings);
+    setDraft(s);
+    if (settings.health) setHealthAsk(s);
     go('#/seduta');
   };
   const start = (p: ProgramId, part: Part, loc: Location) => (draft ? setPendingStart([p, part, loc]) : begin(p, part, loc));
@@ -76,9 +79,7 @@ export function App() {
     await db.enqueue({ path: `sessions/${id}.json`, content: JSON.stringify(done, null, 2) + '\n', message: `Seduta ${id}`, sessionId: id });
     setDraft(null);
     await reload();
-    // Con Salute attiva il messaggio resta finché non lo usi: porta il pulsante che apre il Comando rapido.
-    if (settings.health) setToast({ text: 'Seduta salvata.', health: healthUrl(done) });
-    else { setToast({ text: 'Seduta salvata.' }); setTimeout(() => setToast(null), 5000); }
+    setToast('Seduta salvata.'); setTimeout(() => setToast(null), 5000);
     go('#/');
     void flush().then(reload);
   };
@@ -97,10 +98,10 @@ export function App() {
   else if (hash.startsWith('#/storico/')) {
     const s = sessions.find((x) => x.id === decodeURIComponent(hash.slice('#/storico/'.length)));
     nav = false;
-    view = s ? <SessionDetail session={s} sessions={sessions} health={settings.health} /> : <History sessions={sessions} />;
+    view = s ? <SessionDetail session={s} sessions={sessions} /> : <History sessions={sessions} />;
   } else if (hash === '#/storico') view = <History sessions={sessions} />;
   else if (hash === '#/impostazioni') view = <SettingsScreen settings={settings} saveSettings={saveSettings} />;
-  else view = <Home sessions={sessions} draft={draft} onStart={start} onDiscard={() => setDraft(null)} toast={toast} onToastUsed={() => setToast(null)} />;
+  else view = <Home sessions={sessions} draft={draft} onStart={start} onDiscard={() => setDraft(null)} toast={toast} />;
 
   const current = hash === '#/programma' ? '#/' : hash;
   return (
@@ -112,6 +113,13 @@ export function App() {
           <p className="note">Se ne inizi un'altra, quella aperta viene scartata senza essere salvata.</p>
           <button className="btn ink wide" type="button" onClick={() => { go('#/seduta'); setPendingStart(null); }}>Riprendi quella aperta</button>
           <button className="btn wide" type="button" onClick={() => begin(...pendingStart)}>Scartala e inizia questa</button>
+        </Sheet>
+      )}
+      {healthAsk && (
+        <Sheet title="Aggiungi a Salute" onClose={() => setHealthAsk(null)}>
+          <p className="note">Registra l'allenamento a partire da adesso, con la durata prevista di {plannedMinutes(healthAsk)} minuti.</p>
+          <a className="btn ink wide" href={healthUrl(healthAsk)} onClick={() => setHealthAsk(null)}>Aggiungi a Salute</a>
+          <button className="btn wide" type="button" onClick={() => setHealthAsk(null)}>Non ora</button>
         </Sheet>
       )}
       {nav && (

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import muscleData from './muscles.json';
-import { describeSet, getProgram, healthUrl, localDate, minutesOf, partLabel, shortDay, sortedDesc } from './program';
+import { describeSet, getProgram, localDate, minutesOf, partLabel, shortDay, sortedDesc } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, StoredSession } from './types';
 import { ThemeToggle } from './theme';
@@ -154,7 +154,7 @@ export function History({ sessions }: { sessions: StoredSession[] }) {
   );
 }
 
-export function SessionDetail({ session, sessions, health }: { session: StoredSession; sessions: StoredSession[]; health: boolean }) {
+export function SessionDetail({ session, sessions }: { session: StoredSession; sessions: StoredSession[] }) {
   const def = getProgram(session.program);
   return (
     <div className="screen">
@@ -172,7 +172,6 @@ export function SessionDetail({ session, sessions, health }: { session: StoredSe
         );
       })}
       {session.notes && <p className="note">{session.notes}</p>}
-      {health && <a className="btn wide" href={healthUrl(session)}>Aggiungi a Salute</a>}
     </div>
   );
 }
