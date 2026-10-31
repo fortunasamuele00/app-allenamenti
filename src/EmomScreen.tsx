@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { beep, clock, unlockAudio, useNow, useWakeLock } from './hooks';
+import { beep, clock, releaseAudio, unlockAudio, useNow, useWakeLock } from './hooks';
 import { describeLast, getProgram, lastExercise } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, Session, SetLog, StoredSession } from './types';
@@ -44,6 +44,7 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
   const guideOf = (id: string): GuideRef => { const e = def.exercises.find((x) => x.id === id); return { key: id, name: e?.name ?? exs.find((x) => x.id === id)!.name, note: e?.note, coach: e?.coach }; };
   const now = useNow(phase === 'run');
   useWakeLock(phase !== 'done');
+  useEffect(() => releaseAudio, []);
 
   const draftRef = useRef(draft);
   draftRef.current = draft;

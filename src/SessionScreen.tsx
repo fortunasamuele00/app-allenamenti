@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import { beep, unlockAudio, useWakeLock } from './hooks';
+import { useEffect, useRef, useState } from 'react';
+import { beep, releaseAudio, unlockAudio, useWakeLock } from './hooks';
 import { describeLast, forzaExercise, getProgram, lastExercise } from './program';
 import { readyToProgress } from './progression';
 import type { Location, Session, SetLog, Settings, StoredSession } from './types';
@@ -15,6 +15,7 @@ export function SessionScreen({ draft, setDraft, sessions, settings, saveSetting
   const [closing, setClosing] = useState(false);
   const [guide, setGuide] = useState<GuideRef | null>(null);
   useWakeLock(true);
+  useEffect(() => releaseAudio, []);
 
   // Si parte sempre dall'ultima versione, così due tocchi ravvicinati non si sovrascrivono.
   const latest = useRef(draft);

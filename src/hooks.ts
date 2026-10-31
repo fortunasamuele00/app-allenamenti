@@ -1,30 +1,60 @@
 import { useEffect, useState } from 'react';
 
 let ctx: AudioContext | null = null;
+let keepAlive: AudioBufferSourceNode | null = null;
+
+/** iOS può fermare un audio che tace e poi non farlo ripartire senza un tocco: finché serve, resta in riproduzione un segnale impercettibile. */
+function startKeepAlive(c: AudioContext) {
+  if (keepAlive) return;
+  const buffer = c.createBuffer(1, c.sampleRate, c.sampleRate);
+  buffer.getChannelData(0).fill(0.00001);
+  keepAlive = c.createBufferSource();
+  keepAlive.buffer = buffer;
+  keepAlive.loop = true;
+  keepAlive.connect(c.destination);
+  keepAlive.start();
+}
+
 /** Da chiamare dentro un tocco: iOS fa suonare solo dopo un gesto dell'utente. */
 export function unlockAudio() {
   try {
     // Di default iOS ammutolisce il Web Audio con l'interruttore silenzioso: 'playback' lo fa suonare comunque.
     const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
     if (session) session.type = 'playback';
-    ctx ??= new AudioContext();
+    if (!ctx) {
+      ctx = new AudioContext();
+      // Dopo un'interruzione (telefonata, Siri, cambio app) prova a ripartire da solo.
+      ctx.onstatechange = () => { if (keepAlive && ctx!.state !== 'running') void ctx!.resume().catch(() => {}); };
+    }
     if (ctx.state !== 'running') void ctx.resume();
+    startKeepAlive(ctx);
   } catch { /* niente audio su questo dispositivo */ }
 }
-export function beep(times = 1, freq = 880) {
-  if (!ctx) return;
-  // iOS può sospendere l'audio dopo un'interruzione, anche a pagina aperta.
-  if (ctx.state !== 'running') void ctx.resume();
+
+/** A seduta chiusa libera l'audio, così l'eventuale musica può riprendere. */
+export function releaseAudio() {
+  try { keepAlive?.stop(); } catch { /* già fermo */ }
+  keepAlive = null;
+  void ctx?.suspend().catch(() => {});
+}
+
+function playBeep(c: AudioContext, times: number, freq: number) {
   for (let i = 0; i < times; i++) {
-    const t = ctx.currentTime + i * 0.28;
-    const osc = ctx.createOscillator(), gain = ctx.createGain();
+    const t = c.currentTime + i * 0.28;
+    const osc = c.createOscillator(), gain = c.createGain();
     osc.frequency.value = freq;
     gain.gain.setValueAtTime(0.0001, t);
     gain.gain.exponentialRampToValueAtTime(0.9, t + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
-    osc.connect(gain).connect(ctx.destination);
+    osc.connect(gain).connect(c.destination);
     osc.start(t); osc.stop(t + 0.24);
   }
+}
+export function beep(times = 1, freq = 880) {
+  if (!ctx) return;
+  const c = ctx;
+  if (c.state === 'running') playBeep(c, times, freq);
+  else void c.resume().then(() => playBeep(c, times, freq)).catch(() => {});
 }
 
 /** Tiene lo schermo acceso finché `active` è vero; lo richiede di nuovo quando torni sull'app. */
