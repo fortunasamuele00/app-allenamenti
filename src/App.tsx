@@ -100,7 +100,7 @@ export function App() {
     nav = false;
     view = s ? <SessionDetail session={s} sessions={sessions} /> : <History sessions={sessions} />;
   } else if (hash === '#/storico') view = <History sessions={sessions} />;
-  else if (hash === '#/impostazioni') view = <SettingsScreen settings={settings} saveSettings={saveSettings} />;
+  else if (hash === '#/impostazioni') view = <SettingsScreen settings={settings} saveSettings={saveSettings} onRestored={reload} />;
   else view = <Home sessions={sessions} draft={draft} onStart={start} onDiscard={() => setDraft(null)} toast={toast} />;
 
   const current = hash === '#/programma' ? '#/' : hash;

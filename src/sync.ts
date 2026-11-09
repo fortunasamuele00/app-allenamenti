@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import { db } from './db';
 import { programJson } from './program';
 import readme from './data-readme.md?raw';
-import type { Settings } from './types';
+import type { Session, Settings } from './types';
 
 export interface SyncState { pending: number; busy: boolean; error: string | null; configured: boolean }
 let state: SyncState = { pending: 0, busy: false, error: null, configured: false };
@@ -104,5 +104,37 @@ export async function testConnection(s: Settings): Promise<string> {
     return `GitHub ha risposto ${res.status}.`;
   } catch (e) {
     return e instanceof Error ? e.message : 'Connessione non riuscita.';
+  }
+}
+
+function unb64(text: string): string {
+  return new TextDecoder().decode(Uint8Array.from(atob(text.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
+}
+
+/** Scarica dal repo le sedute che su questo telefono mancano. Non tocca quelle già presenti né la coda. */
+export async function restoreFromRepo(): Promise<string> {
+  const s = await db.settings();
+  if (!isConfigured(s)) return 'Prima salva utente, repo e token.';
+  try {
+    const list = await api(s, 'sessions');
+    if (list.status === 404) return 'Nel repo non ci sono ancora sedute.';
+    if (!list.ok) return `GitHub ha risposto ${list.status} leggendo le sedute.`;
+    const files = ((await list.json()) as { name: string; path: string; type: string }[])
+      .filter((f) => f.type === 'file' && f.name.endsWith('.json'));
+    const have = new Set((await db.sessions()).map((x) => x.id));
+    let added = 0;
+    for (const f of files) {
+      const id = f.name.slice(0, -'.json'.length);
+      if (have.has(id)) continue;
+      const res = await api(s, f.path);
+      if (!res.ok) return `GitHub ha risposto ${res.status} leggendo ${f.path}. Recuperate finora: ${added}.`;
+      const session = JSON.parse(unb64(((await res.json()) as { content: string }).content)) as Session;
+      await db.putSession({ ...session, id, synced: true });
+      added++;
+    }
+    const skipped = files.length - added;
+    return added ? `Recuperate ${added} ${added === 1 ? 'seduta' : 'sedute'} dal repo${skipped ? ` (${skipped} erano già qui)` : ''}.` : 'Nessuna seduta da recuperare: sono già tutte qui.';
+  } catch (e) {
+    return e instanceof Error ? e.message : 'Recupero non riuscito.';
   }
 }

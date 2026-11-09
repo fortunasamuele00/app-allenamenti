@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { flush, testConnection, useSync } from './sync';
+import { flush, restoreFromRepo, testConnection, useSync } from './sync';
 import type { Settings } from './types';
 import { HEALTH_SHORTCUT } from './program';
 import { ThemeToggle } from './theme';
 import { NumField } from './ui';
 
-export function SettingsScreen({ settings, saveSettings }: { settings: Settings; saveSettings: (s: Settings) => Promise<void> }) {
+export function SettingsScreen({ settings, saveSettings, onRestored }: { settings: Settings; saveSettings: (s: Settings) => Promise<void>; onRestored: () => Promise<void> }) {
   const [form, setForm] = useState(settings);
   const [msg, setMsg] = useState<string | null>(null);
+  const [restoreMsg, setRestoreMsg] = useState<string | null>(null);
+  const [restoring, setRestoring] = useState(false);
   const sync = useSync();
   const dirty = JSON.stringify(form) !== JSON.stringify(settings);
   const text = (k: 'owner' | 'repo' | 'token') => ({ value: form[k], onChange: (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, [k]: e.target.value }) });
@@ -34,6 +36,9 @@ export function SettingsScreen({ settings, saveSettings }: { settings: Settings;
         <p className="note">{!sync.configured ? 'Non configurata: le sedute restano sul telefono e in coda.' : sync.pending ? `${sync.pending} ${sync.pending === 1 ? 'salvataggio' : 'salvataggi'} in coda.` : 'Tutto salvato sul repo.'}</p>
         {sync.error && <p className="err" role="alert">{sync.error}</p>}
         <button className="btn wide" type="button" disabled={sync.busy || !sync.configured} onClick={() => void flush()}>{sync.busy ? 'Sincronizzo…' : 'Sincronizza ora'}</button>
+        <p className="note">Telefono nuovo o app reinstallata? Scarica dal repo le sedute che qui mancano: tornano storico, progressioni e turno A→B→C.</p>
+        <button className="btn wide" type="button" disabled={restoring || !sync.configured} onClick={async () => { setRestoring(true); setRestoreMsg('Scarico le sedute…'); const m = await restoreFromRepo(); await onRestored(); setRestoreMsg(m); setRestoring(false); }}>{restoring ? 'Recupero…' : 'Recupera le sedute da GitHub'}</button>
+        {restoreMsg && <p className="t-label" role="status">{restoreMsg}</p>}
       </section>
 
       <section className="ex">
