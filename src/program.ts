@@ -91,21 +91,33 @@ export function forzaExercise(def: ForzaEx, variant: Location, prog: ProgramId, 
   };
 }
 
+/** Forza da 20' (scelta di Samuele, non del coach): warm-up a 1 giro, poi i 3 esercizi in circuito per 3 giri. */
+export const F20 = { minutes: 20, warmupRounds: 1, rounds: 3, restBetween: 30, restRound: 90 };
+
 export function newSession(prog: ProgramId, part: Part, location: Location, sessions: StoredSession[], settings: Settings): Session {
   const def = getProgram(prog);
   const exercises: ExLog[] = [];
+  const f20 = part === 'forza' && settings.forza20;
   if (part === 'forza') {
     const wu = def.forza.warmup;
+    const wuRounds = f20 ? F20.warmupRounds : wu.rounds;
     wu.exercises.forEach((e, idx) => {
       const prev = lastExercise(sessions, prog, 'forza', e.id, location);
       // Il coach scrive il recupero solo a fine giro: lo porta l'ultimo esercizio del giro.
       const rest = idx === wu.exercises.length - 1 ? settings.restByExercise[e.id] ?? settings.restWarmup : 0;
       exercises.push({
         id: e.id, name: e.name, variant: location, block: 'warmup', type: e.type, target: e.target,
-        sets: Array.from({ length: wu.rounds }, (_, i) => prefill(prev, i, rest, e.seconds)),
+        sets: Array.from({ length: wuRounds }, (_, i) => prefill(prev, i, rest, e.seconds)),
       });
     });
-    def.forza.exercises.forEach((e) => exercises.push(forzaExercise(e, location, prog, sessions, settings)));
+    const fx = def.forza.exercises;
+    fx.forEach((e, k) => {
+      if (!f20) { exercises.push(forzaExercise(e, location, prog, sessions, settings)); return; }
+      // In circuito il recupero dipende dalla posizione: breve tra un esercizio e l'altro, lungo a fine giro.
+      const ex = forzaExercise(e, location, prog, sessions, settings, Math.min(e.sets, F20.rounds));
+      ex.sets.forEach((x) => { x.restSec = k === fx.length - 1 ? F20.restRound : F20.restBetween; });
+      exercises.push(ex);
+    });
   } else {
     def.emom.exercises.forEach((e) => {
       const prev = lastExercise(sessions, prog, 'emom', e.id, 'casa');
@@ -118,7 +130,7 @@ export function newSession(prog: ProgramId, part: Part, location: Location, sess
     exercises.push({ id: c.id, name: `Cardio · ${c.name}`, variant: 'casa', block: 'cardio', type: 'cardio', target: `${c.minutes}'`, sets: [{ done: false, restSec: 0 }] });
   }
   const now = new Date();
-  return { date: localDate(now), program: prog, part, location: part === 'emom' ? 'casa' : location, startedAt: now.toISOString(), endedAt: null, exercises, notes: '' };
+  return { date: localDate(now), program: prog, part, location: part === 'emom' ? 'casa' : location, startedAt: now.toISOString(), endedAt: null, exercises, notes: '', ...(part === 'forza' ? { format: f20 ? '20' as const : 'classica' as const } : {}) };
 }
 
 /** Il Comando rapido registra l'allenamento a partire da adesso: va aperto all'inizio, con la durata prevista in minuti. */
@@ -126,7 +138,8 @@ const STRETCHING_MIN = 5;
 export const HEALTH_SHORTCUT: Record<Part, string> = { forza: 'Salute forza', emom: 'Salute EMOM' };
 export function plannedMinutes(s: Session): number {
   const def = getProgram(s.program);
-  return s.part === 'forza' ? def.forza.minutes : def.emom.minutes + STRETCHING_MIN;
+  if (s.part === 'forza') return s.format === '20' ? F20.minutes : def.forza.minutes;
+  return def.emom.minutes + STRETCHING_MIN;
 }
 export function healthUrl(s: Session): string {
   return `shortcuts://run-shortcut?name=${encodeURIComponent(HEALTH_SHORTCUT[s.part])}&input=text&text=${plannedMinutes(s)}`;

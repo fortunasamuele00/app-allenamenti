@@ -65,8 +65,12 @@ function setsByGroup(sessions: StoredSession[], from: string, to: string): numbe
 }
 
 function MuscleRadar({ sessions }: { sessions: StoredSession[] }) {
-  const day = (back: number) => localDate(new Date(Date.now() - back * 86400000));
-  const now = setsByGroup(sessions, day(6), day(0)), prev = setsByGroup(sessions, day(13), day(7));
+  // Settimane da lunedì a domenica: questa (fino a oggi) e quella prima.
+  const today = new Date();
+  const monday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - ((today.getDay() + 6) % 7));
+  const day = (offset: number) => localDate(new Date(monday.getFullYear(), monday.getMonth(), monday.getDate() + offset));
+  const now = setsByGroup(sessions, day(0), day(6)), prev = setsByGroup(sessions, day(-7), day(-1));
+  const since = new Intl.DateTimeFormat('it-IT', { weekday: 'short', day: 'numeric' }).format(monday).replace(/\./g, '');
   const W = 326, H = 250, cx = W / 2, cy = 124, R = 84, n = GROUPS.length;
   const max = Math.max(1, ...now, ...prev);
   const pt = (i: number, r: number) => { const a = (-90 + (360 / n) * i) * (Math.PI / 180); return [cx + Math.cos(a) * r, cy + Math.sin(a) * r] as const; };
@@ -74,7 +78,7 @@ function MuscleRadar({ sessions }: { sessions: StoredSession[] }) {
   return (
     <section className="ex">
       <div className="ex-h"><h2 className="t-title">Gruppi muscolari</h2><span>serie fatte</span></div>
-      <svg className="radar" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Serie negli ultimi 7 giorni: ${GROUPS.map((g, i) => `${g} ${now[i]}`).join(', ')}`}>
+      <svg className="radar" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Serie di questa settimana, da ${since}: ${GROUPS.map((g, i) => `${g} ${now[i]}`).join(', ')}`}>
         {[1 / 3, 2 / 3, 1].map((k) => <polygon key={k} className="ring" points={GROUPS.map((_, i) => pt(i, R * k).join(',')).join(' ')} />)}
         {GROUPS.map((_, i) => { const [x, y] = pt(i, R); return <line key={i} className="ring" x1={cx} y1={cy} x2={x} y2={y} />; })}
         <polygon className="prev" points={poly(prev)} />
@@ -85,7 +89,7 @@ function MuscleRadar({ sessions }: { sessions: StoredSession[] }) {
           return <text key={g} x={x} y={y + (y < cy - R ? -8 : y > cy + R ? 12 : 0)} textAnchor={anchor} className="lab">{g}<tspan className="val"> {now[i]}</tspan></text>;
         })}
       </svg>
-      <p className="key t-label"><span><i />Ultimi 7 giorni</span><span><i className="p" />7 giorni prima</span></p>
+      <p className="key t-label"><span><i />Questa settimana, da {since}</span><span><i className="p" />Settimana scorsa</span></p>
       <p className="t-label">Conta le serie spuntate di forza ed EMOM. L'attribuzione ai gruppi è indicativa, non del coach.</p>
     </section>
   );

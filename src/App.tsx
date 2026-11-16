@@ -94,14 +94,14 @@ export function App() {
     view = draft.part === 'forza'
       ? <SessionScreen draft={draft} setDraft={setDraft} sessions={sessions} settings={settings} saveSettings={(s) => void saveSettings(s)} onFinish={(s) => void finish(s)} onDiscard={discard} />
       : <EmomScreen draft={draft} setDraft={setDraft} sessions={sessions} onFinish={(s) => void finish(s)} onDiscard={discard} />;
-  } else if (hash === '#/programma') view = <ProgramScreen sessions={sessions} onStart={start} />;
+  } else if (hash === '#/programma') view = <ProgramScreen sessions={sessions} settings={settings} onStart={start} />;
   else if (hash.startsWith('#/storico/')) {
     const s = sessions.find((x) => x.id === decodeURIComponent(hash.slice('#/storico/'.length)));
     nav = false;
     view = s ? <SessionDetail session={s} sessions={sessions} /> : <History sessions={sessions} />;
   } else if (hash === '#/storico') view = <History sessions={sessions} />;
   else if (hash === '#/impostazioni') view = <SettingsScreen settings={settings} saveSettings={saveSettings} onRestored={reload} />;
-  else view = <Home sessions={sessions} draft={draft} onStart={start} onDiscard={() => setDraft(null)} toast={toast} />;
+  else view = <Home sessions={sessions} settings={settings} draft={draft} onStart={start} onDiscard={() => setDraft(null)} toast={toast} />;
 
   const current = hash === '#/programma' ? '#/' : hash;
   return (

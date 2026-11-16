@@ -1,6 +1,7 @@
-import { blockWeek, getProgram, localDate, nextProgram, partLabel, program } from './program';
+import { useState } from 'react';
+import { blockWeek, F20, getProgram, localDate, nextProgram, partLabel, program, sortedDesc } from './program';
 import { useSync } from './sync';
-import type { Location, Part, ProgramId, Session, StoredSession } from './types';
+import type { Location, Part, ProgramId, Session, Settings, StoredSession } from './types';
 import { ThemeToggle } from './theme';
 import { DangerButton, Icon } from './ui';
 import { Link } from './nav';
@@ -17,13 +18,19 @@ export function SyncChip() {
   return <Link className={`sync ${tone}`} to="#/impostazioni">{text}</Link>;
 }
 
-export function Home({ sessions, draft, onStart, onDiscard, toast }: {
-  sessions: StoredSession[]; draft: Session | null; toast: string | null; onDiscard: () => void;
+export function Home({ sessions, settings, draft, onStart, onDiscard, toast }: {
+  sessions: StoredSession[]; settings: Settings; draft: Session | null; toast: string | null; onDiscard: () => void;
   onStart: (p: ProgramId, part: Part, loc: Location) => void;
 }) {
   const today = new Date();
   const wk = blockWeek(localDate(today));
   const gym = getProgram(nextProgram(sessions, 'forza'));
+  // Dove fai la forza si sceglie qui, prima di entrare: parte da dove l'hai fatta l'ultima volta.
+  const [loc, setLocState] = useState<Location>(() => {
+    try { const v = localStorage.getItem('dove-forza'); if (v === 'palestra' || v === 'casa') return v; } catch { /* nessuna preferenza */ }
+    return sortedDesc(sessions).find((s) => s.part === 'forza')?.location ?? 'palestra';
+  });
+  const setLoc = (l: Location) => { setLocState(l); try { localStorage.setItem('dove-forza', l); } catch { /* resta per questa apertura */ } };
   const home = getProgram(nextProgram(sessions, 'emom'));
   const done = sessions.filter((s) => s.date >= wk.from && s.date <= wk.to).length;
   const goal = program.weekly.palestra + program.weekly.casa;
@@ -48,16 +55,21 @@ export function Home({ sessions, draft, onStart, onDiscard, toast }: {
         </div>
       )}
 
-      <article className="go">
-        <p className="go-k"><Icon name="gym" />In palestra tocca a</p>
+      <article className={`go${loc === 'casa' ? ' casa' : ''}`}>
+        <p className="go-k"><Icon name={loc === 'casa' ? 'home' : 'gym'} />Forza · tocca a</p>
         <h2><b>{gym.id}</b>{gym.name}</h2>
-        <p className="go-m">Parte 1 · warm-up + forza · circa {gym.forza.minutes}'</p>
-        <p className="go-l">{gym.forza.exercises.map((e) => `${e.palestra.name} ${e.sets} × ${e.palestra.target}`).join(' · ')}</p>
-        <button className="btn pri" type="button" onClick={() => onStart(gym.id, 'forza', 'palestra')}>Inizia in palestra</button>
+        <p className="go-m">{settings.forza20 ? `Parte 1 · warm-up + forza in circuito · ${F20.minutes}'` : `Parte 1 · warm-up + forza · circa ${gym.forza.minutes}'`}</p>
+        <div className="seg" role="group" aria-label="Dove fai la forza">
+          {(['palestra', 'casa'] as const).map((l) => (
+            <button key={l} type="button" aria-pressed={loc === l} onClick={() => setLoc(l)}>{l === 'palestra' ? 'Palestra' : 'Casa'}</button>
+          ))}
+        </div>
+        <p className="go-l">{gym.forza.exercises.map((e) => `${e[loc].name} ${settings.forza20 ? Math.min(e.sets, F20.rounds) : e.sets} × ${e[loc].target}`).join(' · ')}</p>
+        <button className="btn pri" type="button" onClick={() => onStart(gym.id, 'forza', loc)}>{loc === 'casa' ? 'Inizia a casa' : 'Inizia in palestra'}</button>
       </article>
 
       <article className="go casa">
-        <p className="go-k"><Icon name="home" />A casa tocca a</p>
+        <p className="go-k"><Icon name="home" />EMOM a casa · tocca a</p>
         <h2><b>{home.id}</b>{home.name}</h2>
         <p className="go-m">Parte 2 · EMOM {home.emom.minutes}' + stretching · circa 25'</p>
         <p className="go-l">{home.emom.exercises.map((e) => e.name).join(' · ')}</p>

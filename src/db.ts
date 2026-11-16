@@ -31,7 +31,7 @@ async function use<T>(fn: (d: IDBPDatabase<Schema>) => Promise<T>): Promise<T> {
   try { return await fn(await open()); } catch { conn = null; return fn(await open()); }
 }
 
-export const defaultSettings: Settings = { owner: '', repo: 'allenamenti-data', token: '', restForza: 120, restWarmup: 30, restByExercise: {}, health: false };
+export const defaultSettings: Settings = { owner: '', repo: 'allenamenti-data', token: '', restForza: 120, restWarmup: 30, restByExercise: {}, health: false, forza20: true };
 
 export const db = {
   sessions: () => use((d) => d.getAll('sessions')),

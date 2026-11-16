@@ -34,6 +34,10 @@ export interface Session {
   endedAt: string | null;
   exercises: ExLog[];
   notes: string;
+  /** Solo forza. "20": warm-up a 1 giro e forza in circuito a tempo; assente o "classica": come da scheda del coach. */
+  format?: 'classica' | '20';
+  /** Forza da 20': quando è partito il cronometro (prima spunta). */
+  clockStart?: string;
 }
 
 /** La seduta com'è tenuta sul telefono: stessa forma, più chiave e stato di sync. */
@@ -89,4 +93,6 @@ export interface Settings {
   restByExercise: Record<string, number>;
   /** All'inizio della seduta propone il Comando rapido che registra l'allenamento in Salute. */
   health: boolean;
+  /** Forza da 20' in circuito invece della versione classica del coach. */
+  forza20: boolean;
 }

@@ -42,6 +42,15 @@ export function SettingsScreen({ settings, saveSettings, onRestored }: { setting
       </section>
 
       <section className="ex">
+        <h2 className="t-title">Forza</h2>
+        <p className="note">Da 20': warm-up a 1 giro e i tre esercizi in circuito per 3 giri, con cronometro. Classica: come da scheda del coach, warm-up a 3 giri e 2' tra le serie. Vale dalla prossima seduta.</p>
+        <label className="switch">
+          <input type="checkbox" checked={form.forza20} onChange={async (e) => { const next = { ...form, forza20: e.target.checked }; setForm(next); await saveSettings({ ...settings, forza20: next.forza20 }); }} />
+          <span>Forza da 20' in circuito</span>
+        </label>
+      </section>
+
+      <section className="ex">
         <h2 className="t-title">Salute</h2>
         <p className="note">Un'app web non può scrivere in Salute da sola. Lo fa un Comando rapido: all'inizio della seduta compare "Aggiungi a Salute", che lo apre con la durata prevista. Carichi e ripetizioni restano qui e su GitHub.</p>
         <label className="switch">

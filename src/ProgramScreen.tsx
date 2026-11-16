@@ -1,13 +1,13 @@
-import { lastSession, nextProgram, program, shortDay } from './program';
+import { F20, lastSession, nextProgram, program, shortDay } from './program';
 import { readyToProgress } from './progression';
-import type { Location, Part, ProgramId, StoredSession } from './types';
+import type { Location, Part, ProgramId, Settings, StoredSession } from './types';
 import { Icon, ReadyBadge, TopBar } from './ui';
 import { go } from './nav';
 
 const fmt = new Intl.DateTimeFormat('it-IT', { day: 'numeric', month: 'short' });
 const range = `${fmt.format(new Date(program.start + 'T00:00:00'))} – ${fmt.format(new Date(program.end + 'T00:00:00'))}`.replace(/\./g, '');
 
-export function ProgramScreen({ sessions, onStart }: { sessions: StoredSession[]; onStart: (p: ProgramId, part: Part, loc: Location) => void }) {
+export function ProgramScreen({ sessions, settings, onStart }: { sessions: StoredSession[]; settings: Settings; onStart: (p: ProgramId, part: Part, loc: Location) => void }) {
   const next = { forza: nextProgram(sessions, 'forza'), emom: nextProgram(sessions, 'emom') };
   return (
     <div className="screen with-nav">
@@ -26,7 +26,7 @@ export function ProgramScreen({ sessions, onStart }: { sessions: StoredSession[]
               <span>Parte {part === 'forza' ? 1 : 2}<Icon name={part === 'forza' ? 'gym' : 'home'} /></span>
               <span>
                 <b>{part === 'forza' ? 'Warm-up + forza' : `EMOM ${p.emom.minutes}' + stretching`}</b>
-                <small>{part === 'forza' ? `Palestra · circa ${p.forza.minutes}'` : "Casa · circa 25'"}</small>
+                <small>{part === 'forza' ? (settings.forza20 ? `In circuito · ${F20.minutes}'` : `Palestra · circa ${p.forza.minutes}'`) : "Casa · circa 25'"}</small>
                 <span className={`st ${isNext ? 'go' : last ? 'done' : ''}`}>{isNext ? 'Tocca a questa' : last ? `Fatta ${shortDay(last.date).toLowerCase()}` : 'Mai fatta'}</span>
               </span>
             </button>

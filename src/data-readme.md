@@ -46,6 +46,8 @@ Un file per seduta. Se la stessa seduta viene salvata due volte nello stesso gio
 | `program` | `"A" \| "B" \| "C"` | Programma del mesociclo. |
 | `part` | `"forza" \| "emom"` | Parte 1 (warm-up + forza) o Parte 2 (EMOM, con cardio facoltativo). |
 | `location` | `"palestra" \| "casa"` | Dove è stata fatta. L'EMOM è sempre `casa`. |
+| `format` | `"classica" \| "20"`, facoltativo | Solo forza. `"20"`: scelta di Samuele, non del coach — warm-up a 1 giro e i tre esercizi in circuito per 3 giri (30'' tra esercizi, 90'' a fine giro) entro 20 minuti, quindi 3 serie per esercizio invece di 3-4. Assente o `"classica"`: come da scheda. |
+| `clockStart` | ISO 8601, facoltativo | Forza da 20': quando è partito il cronometro (prima serie spuntata). |
 | `startedAt`, `endedAt` | ISO 8601 UTC | Inizio e fine. |
 | `exercises[]` | array | Nell'ordine in cui compaiono nel programma. |
 | `notes` | stringa | Note libere, anche vuota. |
