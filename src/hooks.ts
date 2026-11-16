@@ -28,6 +28,7 @@ export function unlockAudio() {
     }
     if (ctx.state !== 'running') void ctx.resume();
     startKeepAlive(ctx);
+    loadChime(ctx);
   } catch { /* niente audio su questo dispositivo */ }
 }
 
@@ -50,6 +51,33 @@ function playBeep(c: AudioContext, times: number, freq: number) {
     osc.start(t); osc.stop(t + 0.24);
   }
 }
+// Il suono di fine serie e cambio esercizio, scelto da Samuele. Si carica una volta, alla prima accensione dell'audio.
+let chimeBuf: AudioBuffer | null = null;
+let chimeLoading = false;
+function loadChime(c: AudioContext) {
+  if (chimeBuf || chimeLoading) return;
+  chimeLoading = true;
+  fetch(`${import.meta.env.BASE_URL}suoni/fine-serie.mp3`)
+    .then((r) => r.arrayBuffer())
+    .then((b) => c.decodeAudioData(b))
+    .then((buf) => { chimeBuf = buf; })
+    .catch(() => { chimeLoading = false; });
+}
+function playChime(c: AudioContext) {
+  const src = c.createBufferSource();
+  src.buffer = chimeBuf;
+  src.connect(c.destination);
+  src.start();
+}
+/** Fine recupero e passaggio all'esercizio dopo. Se il file non è ancora pronto, due bip. */
+export function chime() {
+  if (!ctx) return;
+  const c = ctx;
+  if (!chimeBuf) { beep(2); return; }
+  if (c.state === 'running') playChime(c);
+  else void c.resume().then(() => playChime(c)).catch(() => {});
+}
+
 export function beep(times = 1, freq = 880) {
   if (!ctx) return;
   const c = ctx;

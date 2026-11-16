@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { beep, releaseAudio, unlockAudio, useWakeLock } from './hooks';
+import { beep, chime, releaseAudio, unlockAudio, useWakeLock } from './hooks';
 import { describeLast, F20, forzaExercise, getProgram, lastExercise } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, ForzaEx, Location, Session, SetLog, Settings, StoredSession } from './types';
@@ -182,7 +182,7 @@ export function SessionScreen({ draft, setDraft, sessions, settings, saveSetting
         <RestDock rest={rest}
           onAdjust={(d) => setRest((r) => r && { ...r, endAt: r.endAt + d * 1000, total: Math.max(15, r.total + d) })}
           onSkip={() => setRest(null)}
-          onDone={() => { beep(2); setRest(null); }} />
+          onDone={() => { chime(); setRest(null); }} />
       )}
 
       {guide && <GuideSheet guide={guide} onClose={() => setGuide(null)} />}

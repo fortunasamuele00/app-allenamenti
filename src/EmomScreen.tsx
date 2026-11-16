@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { beep, clock, releaseAudio, unlockAudio, useNow, useWakeLock } from './hooks';
+import { beep, chime, clock, releaseAudio, unlockAudio, useNow, useWakeLock } from './hooks';
 import { describeLast, getProgram, lastExercise, targetReps } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, Session, SetLog, StoredSession } from './types';
@@ -95,7 +95,7 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
         for (let m = marked.current; m < finished; m++) d.exercises.filter((e) => e.block === 'emom')[m % n].sets[Math.floor(m / n)].done = true;
       });
       marked.current = finished;
-      if (finished >= totalMin) { beep(3, 660); setAcc(totalMs); setPhase('done'); } else beep(1);
+      if (finished >= totalMin) { beep(3, 660); setAcc(totalMs); setPhase('done'); } else chime();
     }
   }, [minute, elapsed >= totalMs, phase]); // eslint-disable-line react-hooks/exhaustive-deps
 
