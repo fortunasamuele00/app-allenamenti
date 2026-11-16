@@ -133,7 +133,7 @@ export function newSession(prog: ProgramId, part: Part, location: Location, sess
     exercises.push({ id: c.id, name: `Cardio · ${c.name}`, variant: 'casa', block: 'cardio', type: 'cardio', target: `${c.minutes}'`, sets: [{ done: false, restSec: 0 }] });
   }
   const now = new Date();
-  return { date: localDate(now), program: prog, part, location: part === 'emom' ? 'casa' : location, startedAt: now.toISOString(), endedAt: null, exercises, notes: '', ...(part === 'forza' ? { format: f20 ? '20' as const : 'classica' as const } : {}) };
+  return { date: localDate(now), program: prog, part, location: part === 'emom' ? 'casa' : location, startedAt: now.toISOString(), endedAt: null, exercises, notes: '', elastici: 2, ...(part === 'forza' ? { format: f20 ? '20' as const : 'classica' as const } : {}) };
 }
 
 /** Il Comando rapido registra l'allenamento a partire da adesso: va aperto all'inizio, con la durata prevista in minuti. */
@@ -146,6 +146,19 @@ export function plannedMinutes(s: Session): number {
 }
 export function healthUrl(s: Session): string {
   return `shortcuts://run-shortcut?name=${encodeURIComponent(HEALTH_SHORTCUT[s.part])}&input=text&text=${plannedMinutes(s)}`;
+}
+
+/**
+ * Fino al 16 nov "hard" era in realtà l'elastico medium e "very hard" l'hard.
+ * Rinomina una seduta senza il segno `elastici: 2`; restituisce null se è già a posto.
+ */
+export function fixBands<T extends Session>(s: T): T | null {
+  if (s.elastici === 2) return null;
+  const map: Record<string, string> = { hard: 'medium', 'very hard': 'hard' };
+  return {
+    ...s, elastici: 2,
+    exercises: s.exercises.map((e) => ({ ...e, sets: e.sets.map((x) => (x.band && map[x.band] ? { ...x, band: map[x.band] } : x)) })),
+  };
 }
 
 export const sessionId = (s: Session) => `${s.date}_${s.program}_${s.part}`;

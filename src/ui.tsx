@@ -62,8 +62,8 @@ export function TextField(p: { value: string | undefined; onChange: (v: string) 
 /** Gli elastici che ci sono: si sceglie da una tendina, niente testo libero. */
 export const BANDS = [
   { value: 'no', label: 'No elastico' },
+  { value: 'medium', label: 'Medium' },
   { value: 'hard', label: 'Hard' },
-  { value: 'very hard', label: 'Very hard' },
 ] as const;
 
 export function BandField(p: { value: string | undefined; onChange: (v: string) => void; label: string }) {

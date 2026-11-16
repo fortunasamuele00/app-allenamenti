@@ -36,6 +36,8 @@ export interface Session {
   notes: string;
   /** Solo forza. "20": warm-up a 1 giro e forza in circuito a tempo; assente o "classica": come da scheda del coach. */
   format?: 'classica' | '20';
+  /** 2: elastici già nei nomi giusti (no, medium, hard). Assente: sedute di prima, dove "hard" era il medium. */
+  elastici?: 2;
   /** Forza da 20': quando è partito il cronometro (prima spunta). */
   clockStart?: string;
 }

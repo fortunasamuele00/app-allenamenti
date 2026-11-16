@@ -47,6 +47,7 @@ Un file per seduta. Se la stessa seduta viene salvata due volte nello stesso gio
 | `part` | `"forza" \| "emom"` | Parte 1 (warm-up + forza) o Parte 2 (EMOM, con cardio facoltativo). |
 | `location` | `"palestra" \| "casa"` | Dove è stata fatta. L'EMOM è sempre `casa`. |
 | `format` | `"classica" \| "20"`, facoltativo | Solo forza. `"20"`: scelta di Samuele, non del coach — warm-up a 1 giro e i tre esercizi in circuito per 3 giri (30'' tra esercizi, 90'' a fine giro) entro 20 minuti, quindi 3 serie per esercizio invece di 3-4. Assente o `"classica"`: come da scheda. |
+| `elastici` | `2`, facoltativo | Segno che gli elastici sono nei nomi attuali (`no`, `medium`, `hard`). Le sedute vecchie sono state rinominate il 16/11/2026: l'elastico che prima si chiamava `hard` era il medium. |
 | `clockStart` | ISO 8601, facoltativo | Forza da 20': quando è partito il cronometro (prima serie spuntata). |
 | `startedAt`, `endedAt` | ISO 8601 UTC | Inizio e fine. |
 | `exercises[]` | array | Nell'ordine in cui compaiono nel programma. |
@@ -69,7 +70,7 @@ Un file per seduta. Se la stessa seduta viene salvata due volte nello stesso gio
 | `type` | Campi | Note |
 |---|---|---|
 | `peso_rip` | `kg`, `reps` | Carico in chili. |
-| `elastico_rip` | `band`, `reps` | `band` è `"no"` (senza elastico), `"hard"` o `"very hard"`: gli unici elastici di Samuele. Sedute vecchie possono avere testo libero. |
+| `elastico_rip` | `band`, `reps` | `band` è `"no"` (senza elastico), `"medium"` o `"hard"`: gli unici elastici di Samuele. Le sedute con `"elastici": 2` usano già questi nomi; nelle sedute fino al 16/11/2026 senza quel campo, `"hard"` era il medium. |
 | `corpo_rip` | `reps` | Corpo libero. |
 | `tempo` | `seconds` | Tenute isometriche (plank, hollow hold). |
 | `cardio` | `minutes` | Facoltativo: compare solo se è stato fatto. |

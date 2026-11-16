@@ -7,7 +7,7 @@ import { healthUrl, newSession, plannedMinutes, sessionId } from './program';
 import { ProgramScreen } from './ProgramScreen';
 import { SessionScreen } from './SessionScreen';
 import { SettingsScreen } from './SettingsScreen';
-import { flush, refreshSync, useSync } from './sync';
+import { flush, migrateBands, refreshSync, useSync } from './sync';
 import type { Location, Part, ProgramId, Session, Settings, StoredSession } from './types';
 import { Icon, Sheet, type IconName } from './ui';
 import { go, Link, useRoute } from './nav';
@@ -37,6 +37,7 @@ export function App() {
     void (async () => {
       // Se i dati salvati non si leggono, l'app parte lo stesso e lo dice, invece di restare vuota.
       try {
+        await migrateBands();
         const [s, st, d] = await Promise.all([db.sessions(), db.settings(), db.draft()]);
         // Un EMOM aperto ma mai partito prende esercizi e ordine aggiornati del programma.
         const stale = d?.part === 'emom' && !d.exercises.some((e) => e.sets.some((x) => x.done));

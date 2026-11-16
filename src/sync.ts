@@ -1,8 +1,8 @@
 import { useSyncExternalStore } from 'react';
 import { db } from './db';
-import { programJson } from './program';
+import { fixBands, programJson } from './program';
 import readme from './data-readme.md?raw';
-import type { Session, Settings } from './types';
+import type { Session, Settings, StoredSession } from './types';
 
 export interface SyncState { pending: number; busy: boolean; error: string | null; configured: boolean }
 let state: SyncState = { pending: 0, busy: false, error: null, configured: false };
@@ -129,7 +129,9 @@ export async function restoreFromRepo(): Promise<string> {
       const res = await api(s, f.path);
       if (!res.ok) return `GitHub ha risposto ${res.status} leggendo ${f.path}. Recuperate finora: ${added}.`;
       const session = JSON.parse(unb64(((await res.json()) as { content: string }).content)) as Session;
-      await db.putSession({ ...session, id, synced: true });
+      const fixed = fixBands(session);
+      if (fixed) await saveFixed({ ...fixed, id, synced: true });
+      else await db.putSession({ ...session, id, synced: true });
       added++;
     }
     const skipped = files.length - added;
@@ -137,4 +139,22 @@ export async function restoreFromRepo(): Promise<string> {
   } catch (e) {
     return e instanceof Error ? e.message : 'Recupero non riuscito.';
   }
+}
+
+/** Salva una seduta corretta e la rimette in coda, così anche il file sul repo si aggiorna. */
+async function saveFixed(s: StoredSession) {
+  const { id, synced: _synced, ...file } = s;
+  await db.putSession({ ...s, synced: false });
+  await db.enqueue({ path: `sessions/${id}.json`, content: JSON.stringify(file, null, 2) + '\n', message: `Seduta ${id}: elastico hard → medium`, sessionId: id });
+}
+
+/** Una volta sola per seduta: rinomina gli elastici delle sedute vecchie (vedi `fixBands`), seduta aperta compresa. */
+export async function migrateBands(): Promise<void> {
+  for (const s of await db.sessions()) {
+    const fixed = fixBands(s);
+    if (fixed) await saveFixed(fixed);
+  }
+  const d = await db.draft();
+  const fd = d && fixBands(d);
+  if (fd) await db.saveDraft(fd);
 }
