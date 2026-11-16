@@ -284,3 +284,12 @@ input, textarea, select { font: inherit; color: inherit; }
 .band-f select { width: 100%; min-width: 0; padding: 0 6px; background: none; border: 0; outline: 0; text-align: center; text-align-last: center; font: 500 18px/1.1 var(--font-display); color: inherit; -webkit-appearance: none; appearance: none; }
 .band-f i { display: flex; align-items: center; justify-content: center; gap: 2px; }
 .band-f i .ic { width: 14px; height: 14px; }
+
+/* EMOM: le ripetizioni si segnano a fine minuto */
+.ask { margin-top: clamp(8px, 1.4dvh, 14px); padding-top: clamp(8px, 1.4dvh, 14px); border-top: 1px solid var(--line-2); }
+.ask-row { display: grid; grid-template-columns: 56px 1fr 56px auto; gap: 8px; align-items: center; margin-top: 8px; }
+.ask-row button { height: 56px; border-radius: var(--r-full); background: var(--surface); font: 500 26px/1 var(--font-display); }
+.ask-row .ok { padding: 0 20px; background: var(--accent); color: var(--on-accent); font: 500 17px/1 var(--font-body); }
+.ask.saved .ask-row .ok { background: var(--text); color: var(--bg); }
+.ask-n { display: flex; align-items: baseline; justify-content: center; gap: 6px; font: 500 34px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.ask-n small { font: 400 13px/1 var(--font-body); color: var(--text-2); }

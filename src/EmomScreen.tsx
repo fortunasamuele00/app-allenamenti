@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { beep, clock, releaseAudio, unlockAudio, useNow, useWakeLock } from './hooks';
-import { describeLast, getProgram, lastExercise } from './program';
+import { describeLast, getProgram, lastExercise, targetReps } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, Session, SetLog, StoredSession } from './types';
 import { DangerButton, GuideSheet, Icon, NameButton, NumField, ReadyBadge, Sheet, TopBar, type GuideRef, BandField } from './ui';
@@ -16,6 +16,26 @@ function RoundField({ ex, set, onChange, unit }: { ex: ExLog; set: SetLog; onCha
     ? <NumField value={set.seconds} onChange={(seconds) => onChange({ seconds })} unit={unit} label={`${ex.name}, secondi`} />
     : <NumField value={set.reps} onChange={(reps) => onChange({ reps })} unit={unit} label={`${ex.name}, ripetizioni`} />;
 }
+/** Negli ultimi secondi del minuto (il recupero, se chiudi in 40'') chiede subito quante ne hai fatte. */
+const ASK_FROM_SEC = 40;
+
+function RepPrompt({ ex, value, suggestion, saved, onSet }: { ex: ExLog; value: number | undefined; suggestion: number | undefined; saved: boolean; onSet: (v: number) => void }) {
+  const secs = ex.type === 'tempo';
+  const step = secs ? 5 : 1;
+  const shown = value ?? suggestion ?? 0;
+  return (
+    <div className={`ask${saved ? ' saved' : ''}`} role="group" aria-label={`${ex.name}: ${secs ? 'secondi' : 'ripetizioni'} fatte`}>
+      <p className="t-label">{saved ? 'Segnato. Puoi ancora correggere' : secs ? 'Quanti secondi hai tenuto?' : 'Quante ne hai fatte?'}</p>
+      <div className="ask-row">
+        <button type="button" aria-label={`${step} in meno`} onClick={() => onSet(Math.max(0, shown - step))}>−</button>
+        <span className="ask-n">{shown}<small>{secs ? 'secondi' : 'rip'}</small></span>
+        <button type="button" aria-label={`${step} in più`} onClick={() => onSet(shown + step)}>+</button>
+        <button type="button" className="ok" onClick={() => onSet(shown)}>{saved ? 'Ok' : 'Segna'}</button>
+      </div>
+    </div>
+  );
+}
+
 const roundText = (exs: ExLog[], r: number) => exs.map((e) => (e.type === 'tempo' ? e.sets[r].seconds : e.sets[r].reps) ?? '–').join(' · ');
 
 export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
@@ -40,6 +60,8 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
   const [editRound, setEditRound] = useState<number | null>(null);
   const [guide, setGuide] = useState<GuideRef | null>(null);
   const [stopping, setStopping] = useState(false);
+  // I numeri precompilati dall'ultima volta sono una proposta: "segnato" vale solo dopo un tuo tocco.
+  const [confirmed, setConfirmed] = useState<Set<string>>(() => new Set());
   // Una seduta già iniziata può avere esercizi che nel frattempo sono usciti dal programma.
   const guideOf = (id: string): GuideRef => { const e = def.exercises.find((x) => x.id === id); return { key: id, name: e?.name ?? exs.find((x) => x.id === id)!.name, note: e?.note, coach: e?.coach }; };
   const now = useNow(phase === 'run');
@@ -128,6 +150,13 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
   const inMinute = inSetup ? 0 : (elapsed - starts[minute] - setupMs(minute)) / 1000;
   const setupLeft = (starts[minute] + setupMs(minute) - elapsed) / 1000;
   const lastRound = round - 1;
+  const asking = phase === 'run' && !inSetup && inMinute >= ASK_FROM_SEC;
+  const curSet = cur.sets[round];
+  const curVal = cur.type === 'tempo' ? curSet?.seconds : curSet?.reps;
+  // Proposta: quanto avevi fatto in quel giro l'ultima volta, altrimenti il previsto.
+  const prevEx = lastExercise(sessions, draft.program, 'emom', cur.id, 'casa');
+  const prevSet = prevEx?.sets[round];
+  const suggestion = (cur.type === 'tempo' ? prevSet?.seconds : prevSet?.reps) ?? targetReps(cur.target) ?? undefined;
 
   return (
     <div className="screen emom">
@@ -141,6 +170,10 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
         <p className="t-label">{inSetup ? "Prepara l'elastico" : `Minuto ${minute + 1} di ${totalMin}`} · giro {round + 1} di {def.rounds}</p>
         <p className="t-num" role="timer">{clock(inSetup ? setupLeft : 60 - inMinute)}</p>
         <h1><NameButton guide={guideOf(cur.id)} onOpen={setGuide} /></h1><p>{cur.target}</p>
+        {asking && curSet && (
+          <RepPrompt ex={cur} value={curVal} suggestion={suggestion} saved={confirmed.has(`${cur.id}:${round}`)}
+            onSet={(v) => { patch(cur.id, round, cur.type === 'tempo' ? { seconds: v } : { reps: v }); setConfirmed((c) => new Set(c).add(`${cur.id}:${round}`)); }} />
+        )}
       </div>
       <div className="next-ex">
         {next ? <><span><span className="t-label">Poi</span><br /><span className="t-head">{next.name}</span></span><span className="t-label">{next.target}</span></>
