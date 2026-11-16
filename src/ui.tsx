@@ -59,6 +59,28 @@ export function TextField(p: { value: string | undefined; onChange: (v: string) 
   );
 }
 
+/** Gli elastici che ci sono: si sceglie da una tendina, niente testo libero. */
+export const BANDS = [
+  { value: 'no', label: 'No elastico' },
+  { value: 'hard', label: 'Hard' },
+  { value: 'very hard', label: 'Very hard' },
+] as const;
+
+export function BandField(p: { value: string | undefined; onChange: (v: string) => void; label: string }) {
+  const known = BANDS.some((b) => b.value === p.value);
+  return (
+    <label className="f band-f">
+      <select value={p.value ?? ''} aria-label={p.label} onChange={(e) => p.onChange(e.target.value)}>
+        {!p.value && <option value="" disabled>Scegli</option>}
+        {/* Un valore vecchio scritto a mano resta visibile finché non ne scegli uno nuovo. */}
+        {p.value && !known && <option value={p.value}>{p.value}</option>}
+        {BANDS.map((b) => <option key={b.value} value={b.value}>{b.label}</option>)}
+      </select>
+      <i>elastico<svg className="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" /></svg></i>
+    </label>
+  );
+}
+
 /** I campi di una serie, scelti dal tipo di esercizio. */
 export function SetFields({ ex, set, onChange }: { ex: ExLog; set: SetLog; onChange: (patch: Partial<SetLog>) => void }) {
   const t = targetReps(ex.target.replace(/^\d+x/, ''));
@@ -69,7 +91,7 @@ export function SetFields({ ex, set, onChange }: { ex: ExLog; set: SetLog; onCha
       <NumField value={set.reps} onChange={(reps) => onChange({ reps })} unit="rip" label="Ripetizioni" placeholder={hint} />
     </>);
     case 'elastico_rip': return (<>
-      <TextField value={set.band} onChange={(band) => onChange({ band })} unit="elastico" label="Livello dell'elastico" />
+      <BandField value={set.band} onChange={(band) => onChange({ band })} label="Elastico" />
       <NumField value={set.reps} onChange={(reps) => onChange({ reps })} unit="rip" label="Ripetizioni" placeholder={hint} />
     </>);
     case 'corpo_rip': return <NumField value={set.reps} onChange={(reps) => onChange({ reps })} unit="rip" label="Ripetizioni" placeholder={hint} />;

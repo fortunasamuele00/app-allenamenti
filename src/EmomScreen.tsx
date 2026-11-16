@@ -3,7 +3,7 @@ import { beep, clock, releaseAudio, unlockAudio, useNow, useWakeLock } from './h
 import { describeLast, getProgram, lastExercise } from './program';
 import { readyToProgress } from './progression';
 import type { ExLog, Session, SetLog, StoredSession } from './types';
-import { DangerButton, GuideSheet, Icon, NameButton, NumField, ReadyBadge, Sheet, TextField, TopBar, type GuideRef } from './ui';
+import { DangerButton, GuideSheet, Icon, NameButton, NumField, ReadyBadge, Sheet, TopBar, type GuideRef, BandField } from './ui';
 import { go } from './nav';
 
 type Phase = 'ready' | 'run' | 'pause' | 'done';
@@ -95,7 +95,7 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
               <p className="last"><span>Ultima volta</span>{last ? describeLast(last) : 'prima seduta'}</p>
               {readyToProgress(sessions, draft.program, 'emom', ex.id, 'casa') && <ReadyBadge />}
               {ex.type === 'elastico_rip' && (
-                <div className="band"><TextField value={ex.sets[0].band} unit="elastico" label={`Elastico per ${ex.name}`}
+                <div className="band"><BandField value={ex.sets[0].band} label={`Elastico per ${ex.name}`}
                   onChange={(band) => update((d) => d.exercises.find((e) => e.id === ex.id)!.sets.forEach((s) => { s.band = band; }))} /></div>
               )}
               <div className="rounds">

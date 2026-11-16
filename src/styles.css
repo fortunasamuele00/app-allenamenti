@@ -279,3 +279,8 @@ input, textarea, select { font: inherit; color: inherit; }
 .circ-ex + .circ-ex { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line-2); }
 .circ-row + .circ-row { margin-top: 4px; }
 .circ-row .wname { margin-bottom: 6px; }
+
+/* Elastico: tendina con le tre scelte */
+.band-f select { width: 100%; min-width: 0; padding: 0 6px; background: none; border: 0; outline: 0; text-align: center; text-align-last: center; font: 500 18px/1.1 var(--font-display); color: inherit; -webkit-appearance: none; appearance: none; }
+.band-f i { display: flex; align-items: center; justify-content: center; gap: 2px; }
+.band-f i .ic { width: 14px; height: 14px; }

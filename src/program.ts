@@ -57,10 +57,13 @@ export function lastExercise(sessions: StoredSession[], prog: ProgramId, part: P
   }
 }
 
+/** Come si legge l'elastico nello storico: "no" diventa "senza". */
+export const bandText = (b?: string) => (!b ? '–' : b === 'no' ? 'senza' : b);
+
 export function describeSet(ex: Pick<ExLog, 'type'>, s: SetLog): string {
   switch (ex.type) {
     case 'peso_rip': return `${s.kg ?? '–'} kg × ${s.reps ?? '–'}`;
-    case 'elastico_rip': return `${s.band || '–'} × ${s.reps ?? '–'}`;
+    case 'elastico_rip': return `${bandText(s.band)} × ${s.reps ?? '–'}`;
     case 'corpo_rip': return `${s.reps ?? '–'}`;
     case 'tempo': return `${s.seconds ?? '–'}"`;
     case 'cardio': return `${s.minutes ?? '–'}'`;
@@ -72,7 +75,7 @@ export function describeLast(ex: ExLog): string {
   const done = ex.sets.filter((s) => s.done);
   if (!done.length) return '';
   if (ex.type === 'peso_rip' && done.every((s) => s.kg === done[0].kg)) return `${done[0].kg ?? '–'} kg × ${done.map((s) => s.reps ?? '–').join(' · ')}`;
-  if (ex.type === 'elastico_rip' && done.every((s) => s.band === done[0].band)) return `${done[0].band || '–'} × ${done.map((s) => s.reps ?? '–').join(' · ')}`;
+  if (ex.type === 'elastico_rip' && done.every((s) => s.band === done[0].band)) return `${bandText(done[0].band)} × ${done.map((s) => s.reps ?? '–').join(' · ')}`;
   return done.map((s) => describeSet(ex, s)).join(' · ');
 }
 

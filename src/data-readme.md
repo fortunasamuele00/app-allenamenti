@@ -69,7 +69,7 @@ Un file per seduta. Se la stessa seduta viene salvata due volte nello stesso gio
 | `type` | Campi | Note |
 |---|---|---|
 | `peso_rip` | `kg`, `reps` | Carico in chili. |
-| `elastico_rip` | `band`, `reps` | `band` è testo libero (es. `"medio"`, `"verde doppio"`). |
+| `elastico_rip` | `band`, `reps` | `band` è `"no"` (senza elastico), `"hard"` o `"very hard"`: gli unici elastici di Samuele. Sedute vecchie possono avere testo libero. |
 | `corpo_rip` | `reps` | Corpo libero. |
 | `tempo` | `seconds` | Tenute isometriche (plank, hollow hold). |
 | `cardio` | `minutes` | Facoltativo: compare solo se è stato fatto. |
