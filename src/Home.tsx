@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { blockWeek, F20, getProgram, localDate, partLabel, program, SEQ, sequenceState, sortedDesc, stepLabel } from './program';
+import { useEffect, useState } from 'react';
+import { db } from './db';
+import { blockWeek, F20, getProgram, localDate, partLabel, program, SEQ, sequenceState, sortedDesc } from './program';
 import { useSync } from './sync';
 import type { Location, Part, ProgramId, Session, Settings, StoredSession } from './types';
 import { ThemeToggle } from './theme';
@@ -18,18 +19,49 @@ export function SyncChip() {
   return <Link className={`sync ${tone}`} to="#/impostazioni">{text}</Link>;
 }
 
-/** La sequenza fissa: fatte, quella che tocca, e il riposo in fondo. */
+/** Il giro della sequenza: le fatte diventano arancioni, quella che tocca ha il bordo, il riposo in fondo. */
 export function SeqStrip({ index, done, rest = false }: { index: number; done: number; rest?: boolean }) {
+  const n = rest ? SEQ.length : done;
   return (
-    <section className="seq" aria-label="Sequenza">
+    <section className="seq" aria-label={`Giro: ${n} di ${SEQ.length} fatte`}>
+      <div className="week-h"><h2 className="t-head">Il giro</h2><span>{n} di {SEQ.length}</span></div>
       <ol>
         {SEQ.map((x, i) => (
           <li key={i} className={rest || i < done ? 'd' : i === index ? 'now' : ''}><small>{x.part === 'forza' ? 'Forza' : 'EMOM'}</small><b>{x.program}</b></li>
         ))}
         <li className={`rest${rest ? ' now' : ''}`}><small>Riposo</small><b>–</b></li>
       </ol>
-      <p>{rest ? 'Poi si riparte da Forza A' : <>Poi: {index === SEQ.length - 1 ? 'riposo, e si riparte da Forza A' : `${stepLabel(SEQ[index + 1])} · ${getProgram(SEQ[index + 1].program).name}`}</>}</p>
     </section>
+  );
+}
+
+/** Frasi di partenza, una al giorno, finché non scrivi la tua in Impostazioni. */
+const MOTTI = [
+  'Il te di fra sei mesi ti sta guardando adesso.',
+  'Il livello sale solo se ti presenti.',
+  'Venti minuti. Il resto è una scusa.',
+  'Nessuno è diventato forte nei giorni in cui ha saltato.',
+  'Lui si è allenato anche oggi. E tu?',
+  'Una seduta alla volta. Oggi tocca a questa.',
+];
+const fmtAgo = (days: number) => (days === 0 ? 'oggi' : days === 1 ? 'ieri' : `${days} giorni fa`);
+
+/** La spinta ad allenarsi: la tua frase, la tua immagine, e da quanto non ti alleni. */
+function Motivo({ settings, sessions }: { settings: Settings; sessions: StoredSession[] }) {
+  const [img, setImg] = useState<string | null>(null);
+  useEffect(() => { void db.motivoImg().then(setImg).catch(() => setImg(null)); }, []);
+  const today = new Date();
+  const dayN = Math.floor(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() / 86400000);
+  const text = settings.motto.trim() || MOTTI[dayN % MOTTI.length];
+  const last = sortedDesc(sessions)[0];
+  const ago = last ? Math.round((new Date(localDate(today) + 'T00:00:00').getTime() - new Date(last.date + 'T00:00:00').getTime()) / 86400000) : null;
+  return (
+    <Link className={`motivo${img ? ' img' : ''}`} to="#/impostazioni" style={img ? { backgroundImage: `url(${img})` } : undefined} aria-label={`${text} Tocca per cambiarla.`}>
+      <span>
+        <q>{text}</q>
+        {ago != null && <small className={ago >= 2 ? 'warn' : ''}>Ultimo allenamento: {fmtAgo(ago)}</small>}
+      </span>
+    </Link>
   );
 }
 
@@ -54,8 +86,6 @@ export function Home({ sessions, settings, draft, onStart, onDiscard, toast }: {
   });
   const setLoc = (l: Location) => { setLocState(l); try { localStorage.setItem('dove-forza', l); } catch { /* resta per questa apertura */ } };
   const where: Location = step.part === 'emom' ? 'casa' : loc;
-  const done = sessions.filter((s) => s.date >= wk.from && s.date <= wk.to).length;
-  const goal = program.weekly.palestra + program.weekly.casa;
   const head = wk.state === 'before' ? `${program.name} · inizia ${/^(1|8|11) /.test(fmtShort.format(new Date(program.start + 'T00:00:00'))) ? "l'" : 'il '}${fmtShort.format(new Date(program.start + 'T00:00:00')).replace('.', '')}`
     : wk.state === 'after' ? `${program.name} · blocco concluso` : `${program.name} · settimana ${wk.week} di ${wk.weeks}`;
 
@@ -79,7 +109,7 @@ export function Home({ sessions, settings, draft, onStart, onDiscard, toast }: {
 
       <article className={`go${step.part === 'emom' || loc === 'casa' ? ' casa' : ''}`}>
         <div className="go-top">
-          <p className="go-k">{rest ?? `Tocca a · ${seq.index + 1} di ${SEQ.length}`}</p>
+          <p className="go-k">{rest ?? 'Tocca a'}</p>
           {step.part === 'forza' ? (
             <div className="where" role="group" aria-label="Dove fai la forza">
               {(['palestra', 'casa'] as const).map((l) => (
@@ -101,12 +131,8 @@ export function Home({ sessions, settings, draft, onStart, onDiscard, toast }: {
 
       <SeqStrip index={seq.index} done={seq.done} rest={!!rest} />
 
-      <section className="week">
-        <div className="week-h"><h2 className="t-head">Questa settimana</h2><span>{Math.min(done, goal)} di {goal}</span></div>
-        <div className="caps" role="img" aria-label={`${done} sedute fatte su ${goal}`}>
-          {Array.from({ length: goal }, (_, i) => <i key={i} className={i < done ? 'd' : ''} />)}
-        </div>
-      </section>
+
+      <Motivo settings={settings} sessions={sessions} />
 
       <Link className="all" to="#/programma">Tutto il programma<Icon name="chev" /></Link>
     </div>

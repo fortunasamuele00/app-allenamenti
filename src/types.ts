@@ -97,4 +97,6 @@ export interface Settings {
   health: boolean;
   /** Forza da 20' in circuito invece della versione classica del coach. */
   forza20: boolean;
+  /** La frase che ti fa venire voglia di allenarti, in home. Vuota: una delle frasi di partenza. */
+  motto: string;
 }

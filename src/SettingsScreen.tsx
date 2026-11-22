@@ -1,9 +1,53 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { db } from './db';
 import { flush, restoreFromRepo, testConnection, useSync } from './sync';
 import type { Settings } from './types';
 import { HEALTH_SHORTCUT } from './program';
 import { ThemeToggle } from './theme';
 import { NumField } from './ui';
+
+/** Rimpicciolisce la foto prima di salvarla: basta per lo sfondo e non pesa sul telefono. */
+function shrink(file: File): Promise<string> {
+  return new Promise((ok, ko) => {
+    const url = URL.createObjectURL(file);
+    const im = new Image();
+    im.onload = () => {
+      const k = Math.min(1, 1080 / Math.max(im.width, im.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(im.width * k); c.height = Math.round(im.height * k);
+      c.getContext('2d')!.drawImage(im, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      ok(c.toDataURL('image/jpeg', 0.82));
+    };
+    im.onerror = () => { URL.revokeObjectURL(url); ko(new Error('Immagine non leggibile')); };
+    im.src = url;
+  });
+}
+
+function MotivoSettings({ settings, saveSettings }: { settings: Settings; saveSettings: (s: Settings) => Promise<void> }) {
+  const [motto, setMotto] = useState(settings.motto);
+  const [img, setImg] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+  useEffect(() => { void db.motivoImg().then(setImg).catch(() => setImg(null)); }, []);
+  return (
+    <section className="ex">
+      <h2 className="t-title">Motivazione</h2>
+      <p className="note">La frase e l'immagine che vedi in home, sotto il giro. Scrivi chi vuoi diventare. Restano su questo telefono.</p>
+      <label className="field"><span>La tua frase</span>
+        <textarea rows={2} value={motto} placeholder="Vuota: una frase diversa ogni giorno" onChange={(e) => setMotto(e.target.value)} /></label>
+      <button className="btn wide" type="button" disabled={motto === settings.motto} onClick={async () => { await saveSettings({ ...settings, motto }); setMsg('Frase salvata.'); }}>Salva la frase</button>
+      {img && <div className="motivo img prev" style={{ backgroundImage: `url(${img})` }} />}
+      <label className="btn wide file">{img ? 'Cambia immagine' : "Scegli un'immagine"}
+        <input type="file" accept="image/*" onChange={async (e) => {
+          const f = e.target.files?.[0]; if (!f) return;
+          try { const d = await shrink(f); await db.saveMotivoImg(d); setImg(d); setMsg('Immagine salvata.'); } catch (err) { setMsg(err instanceof Error ? err.message : String(err)); }
+          e.target.value = '';
+        }} /></label>
+      {img && <button className="link danger" type="button" onClick={async () => { await db.saveMotivoImg(null); setImg(null); setMsg('Immagine tolta.'); }}>Togli l'immagine</button>}
+      {msg && <p className="t-label" role="status">{msg}</p>}
+    </section>
+  );
+}
 
 export function SettingsScreen({ settings, saveSettings, onRestored }: { settings: Settings; saveSettings: (s: Settings) => Promise<void>; onRestored: () => Promise<void> }) {
   const [form, setForm] = useState(settings);
@@ -18,6 +62,8 @@ export function SettingsScreen({ settings, saveSettings, onRestored }: { setting
     <div className="screen with-nav">
       <div className="top"><span /><ThemeToggle /></div>
       <h1 className="t-display day">Impostazioni</h1>
+
+      <MotivoSettings settings={settings} saveSettings={saveSettings} />
 
       <section className="ex">
         <h2 className="t-title">GitHub</h2>

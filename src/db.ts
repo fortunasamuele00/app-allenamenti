@@ -31,7 +31,7 @@ async function use<T>(fn: (d: IDBPDatabase<Schema>) => Promise<T>): Promise<T> {
   try { return await fn(await open()); } catch { conn = null; return fn(await open()); }
 }
 
-export const defaultSettings: Settings = { owner: '', repo: 'allenamenti-data', token: '', restForza: 120, restWarmup: 30, restByExercise: {}, health: false, forza20: true };
+export const defaultSettings: Settings = { owner: '', repo: 'allenamenti-data', token: '', restForza: 120, restWarmup: 30, restByExercise: {}, health: false, forza20: true, motto: '' };
 
 export const db = {
   sessions: () => use((d) => d.getAll('sessions')),
@@ -47,6 +47,9 @@ export const db = {
   saveSettings: (s: Settings) => use(async (d) => { await d.put('kv', s, 'settings'); }),
   draft: () => use(async (d) => ((await d.get('kv', 'draft')) as Session | undefined) ?? null),
   saveDraft: (s: Session | null) => use(async (d) => { if (s) await d.put('kv', s, 'draft'); else await d.delete('kv', 'draft'); }),
+  /** L'immagine della motivazione, come data URL. Resta solo su questo telefono, non va su GitHub. */
+  motivoImg: () => use(async (d) => ((await d.get('kv', 'motivo-img')) as string | undefined) ?? null),
+  saveMotivoImg: (img: string | null) => use(async (d) => { if (img) await d.put('kv', img, 'motivo-img'); else await d.delete('kv', 'motivo-img'); }),
   pushed: () => use(async (d) => ((await d.get('kv', 'pushed')) as Record<string, string> | undefined) ?? {}),
   savePushed: (p: Record<string, string>) => use(async (d) => { await d.put('kv', p, 'pushed'); }),
 };

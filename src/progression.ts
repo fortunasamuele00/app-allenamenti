@@ -28,7 +28,7 @@ const HARDER: Record<string, string> = {
   'b-emom-crunch': 'Braccia tese dietro la testa per tutta la serie.',
   'c-emom-affondi-braccia-alte': "Tieni una bottiglia d'acqua per mano, braccia tese in alto.",
   'c-emom-hollow-hold': 'Gambe tese e più vicine al pavimento, braccia sopra la testa.',
-  'a-leg-curl:casa': "Una gamba sola: l'altra resta sollevata.",
+  'a-leg-curl:casa': "Una gamba sola, con lo stesso elastico.",
 };
 
 export interface Tip { title: string; text: string }

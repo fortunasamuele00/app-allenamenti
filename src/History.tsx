@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import muscleData from './muscles.json';
 import { describeSet, getProgram, localDate, minutesOf, partLabel, shortDay, sortedDesc } from './program';
 import { progressTip } from './progression';
@@ -54,6 +55,46 @@ function MuscleRadar({ sessions }: { sessions: StoredSession[] }) {
   );
 }
 
+const fmtMonth = new Intl.DateTimeFormat('it-IT', { month: 'long', year: 'numeric' });
+
+/** Il mese a griglia, da lunedì: i giorni in cui ti sei allenato sono arancioni, con la lettera della seduta. */
+function MonthCalendar({ sessions }: { sessions: StoredSession[] }) {
+  const [shift, setShift] = useState(0);
+  const now = new Date();
+  const first = new Date(now.getFullYear(), now.getMonth() + shift, 1);
+  const days = new Date(first.getFullYear(), first.getMonth() + 1, 0).getDate();
+  const lead = (first.getDay() + 6) % 7;
+  const today = localDate(now);
+  const byDay = new Map<string, StoredSession[]>();
+  for (const s of sessions) byDay.set(s.date, [...(byDay.get(s.date) ?? []), s]);
+  const cells = Array.from({ length: lead + days }, (_, i) => (i < lead ? null : localDate(new Date(first.getFullYear(), first.getMonth(), i - lead + 1))));
+  const trained = cells.filter((d) => d && byDay.has(d)).length;
+  const label = fmtMonth.format(first);
+  return (
+    <section className="ex cal">
+      <div className="cal-h">
+        <button type="button" aria-label="Mese prima" onClick={() => setShift(shift - 1)}><Icon name="back" /></button>
+        <h2 className="t-title">{label.charAt(0).toUpperCase() + label.slice(1)}</h2>
+        <button type="button" aria-label="Mese dopo" disabled={shift >= 0} onClick={() => setShift(shift + 1)}><Icon name="chev" /></button>
+      </div>
+      <div className="cal-g" role="grid">
+        {['L', 'M', 'M', 'G', 'V', 'S', 'D'].map((d, i) => <span key={i} className="cal-wd">{d}</span>)}
+        {cells.map((d, i) => {
+          if (!d) return <span key={i} />;
+          const list = byDay.get(d);
+          const cls = [list ? 'on' : '', d === today ? 'today' : '', d > today ? 'fut' : ''].join(' ');
+          return (
+            <span key={i} className={`cal-d ${cls}`} aria-label={`${Number(d.slice(8))}${list ? ': ' + list.map((x) => `${x.part === 'forza' ? 'forza' : 'EMOM'} ${x.program}`).join(', ') : ''}`}>
+              <b>{Number(d.slice(8))}</b>{list && <small>{list.map((x) => x.program).join('')}</small>}
+            </span>
+          );
+        })}
+      </div>
+      <p className="t-label">{trained} {trained === 1 ? 'giorno' : 'giorni'} di allenamento</p>
+    </section>
+  );
+}
+
 export function History({ sessions }: { sessions: StoredSession[] }) {
   const list = sortedDesc(sessions);
   return (
@@ -64,6 +105,7 @@ export function History({ sessions }: { sessions: StoredSession[] }) {
       {!list.length && <p className="empty">Qui trovi le sedute salvate e i muscoli lavorati nella settimana. Inizia la prima dalla scheda Programma.</p>}
 
       {list.length > 0 && <MuscleRadar sessions={sessions} />}
+      <MonthCalendar sessions={sessions} />
 
       {list.length > 0 && <h2 className="t-head log-h">Sedute</h2>}
       <div className="log">

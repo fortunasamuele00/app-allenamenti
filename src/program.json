@@ -59,7 +59,7 @@
             "id": "a-leg-curl",
             "sets": 4,
             "palestra": { "name": "Leg curl seduto", "type": "peso_rip", "target": "12" },
-            "casa": { "name": "Leg curl con asciugamano", "type": "corpo_rip", "target": "12", "substitution": true, "note": "Sul pavimento, pancia in su, talloni sull'asciugamano, bacino alto." }
+            "casa": { "name": "Leg curl con elastico", "type": "elastico_rip", "target": "12", "substitution": true, "note": "A pancia in giù, elastico ancorato in basso alla porta e attorno alle caviglie; porti i talloni verso i glutei e torni giù lento." }
           }
         ]
       },
