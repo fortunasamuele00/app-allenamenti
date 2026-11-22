@@ -1,0 +1,292 @@
+{
+  "_note": "Muscoli principali e dove si dovrebbe sentire ogni esercizio, scritti da Claude il 2026-11-22. Non vengono dal file del coach. Stesse chiavi di guide.json.",
+  "entries": {
+    "a-wu-squat": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei"
+      ],
+      "feel": "Davanti alla coscia e nei glutei, soprattutto in risalita."
+    },
+    "c-wu-squat": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei"
+      ],
+      "feel": "Davanti alla coscia e nei glutei, soprattutto in risalita."
+    },
+    "a-wu-affondi": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei"
+      ],
+      "feel": "Coscia e gluteo della gamba davanti; quella dietro fa poco."
+    },
+    "a-wu-plank-centrale": {
+      "muscles": [
+        "Addome",
+        "Core"
+      ],
+      "feel": "Addome teso come se dovessi prendere un pugno. Se senti la zona lombare, il bacino sta cadendo."
+    },
+    "b-wu-plank": {
+      "muscles": [
+        "Addome",
+        "Core"
+      ],
+      "feel": "Addome teso come se dovessi prendere un pugno. Se senti la zona lombare, il bacino sta cadendo."
+    },
+    "a-wu-plank-dx": {
+      "muscles": [
+        "Obliqui",
+        "Glutei"
+      ],
+      "feel": "Fianco rivolto verso il pavimento e gluteo dello stesso lato."
+    },
+    "a-wu-plank-sx": {
+      "muscles": [
+        "Obliqui",
+        "Glutei"
+      ],
+      "feel": "Fianco rivolto verso il pavimento e gluteo dello stesso lato."
+    },
+    "b-wu-diamante": {
+      "muscles": [
+        "Tricipiti",
+        "Petto"
+      ],
+      "feel": "Dietro al braccio (tricipiti) e in mezzo al petto."
+    },
+    "b-wu-plank-inverso": {
+      "muscles": [
+        "Glutei",
+        "Spalle",
+        "Lombari"
+      ],
+      "feel": "Glutei e retro delle spalle; il petto si apre."
+    },
+    "c-wu-mountain-climber": {
+      "muscles": [
+        "Core",
+        "Spalle"
+      ],
+      "feel": "Addome e spalle che tengono il peso; il fiato sale."
+    },
+    "c-wu-hollow-rock": {
+      "muscles": [
+        "Addome"
+      ],
+      "feel": "Tutto l'addome, soprattutto la parte bassa."
+    },
+    "a-squat:palestra": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei"
+      ],
+      "feel": "Davanti alla coscia e nei glutei. Se lo senti nella schiena, il busto si sta piegando troppo."
+    },
+    "a-squat:casa": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei"
+      ],
+      "feel": "Coscia e gluteo della gamba davanti. La gamba dietro serve solo a stare in equilibrio."
+    },
+    "a-hip-thrust:palestra": {
+      "muscles": [
+        "Glutei",
+        "Femorali"
+      ],
+      "feel": "Nei glutei, forte in alto nella pausa. Se lo senti nella zona lombare stai inarcando: chiudi le costole."
+    },
+    "a-hip-thrust:casa": {
+      "muscles": [
+        "Glutei",
+        "Femorali"
+      ],
+      "feel": "Nei glutei, forte in alto nella pausa. Se lo senti nella zona lombare stai inarcando: chiudi le costole."
+    },
+    "a-leg-curl:palestra": {
+      "muscles": [
+        "Femorali"
+      ],
+      "feel": "Dietro alla coscia, dal ginocchio in su."
+    },
+    "a-leg-curl:casa": {
+      "muscles": [
+        "Femorali",
+        "Glutei"
+      ],
+      "feel": "Dietro alla coscia; i glutei tengono il bacino alto. Crampetti ai femorali all'inizio sono normali."
+    },
+    "b-panca:palestra": {
+      "muscles": [
+        "Petto",
+        "Tricipiti",
+        "Spalle"
+      ],
+      "feel": "Petto per primo, poi dietro al braccio quando spingi fino in fondo."
+    },
+    "b-panca:casa": {
+      "muscles": [
+        "Petto",
+        "Tricipiti",
+        "Spalle"
+      ],
+      "feel": "Petto per primo, poi dietro al braccio quando spingi fino in fondo."
+    },
+    "b-arnold:palestra": {
+      "muscles": [
+        "Spalle"
+      ],
+      "feel": "Davanti e di lato alla spalla. Se lo senti nel collo, abbassa le spalle dalle orecchie."
+    },
+    "b-arnold:casa": {
+      "muscles": [
+        "Spalle"
+      ],
+      "feel": "Davanti e di lato alla spalla. Se lo senti nel collo, abbassa le spalle dalle orecchie."
+    },
+    "b-chest-press:palestra": {
+      "muscles": [
+        "Petto",
+        "Tricipiti"
+      ],
+      "feel": "Petto, soprattutto quando le mani si avvicinano davanti a te."
+    },
+    "b-chest-press:casa": {
+      "muscles": [
+        "Petto",
+        "Tricipiti"
+      ],
+      "feel": "Petto, soprattutto quando le mani si avvicinano davanti a te."
+    },
+    "c-stacco:palestra": {
+      "muscles": [
+        "Femorali",
+        "Glutei",
+        "Schiena bassa"
+      ],
+      "feel": "Dietro alle cosce e nei glutei. La schiena lavora per stare dritta, non deve far male."
+    },
+    "c-stacco:casa": {
+      "muscles": [
+        "Femorali",
+        "Glutei"
+      ],
+      "feel": "Tensione dietro alle cosce mentre scendi, glutei quando risali. Se lo senti solo nella schiena, piega meno il busto e porta più indietro il bacino."
+    },
+    "c-lat-pulldown:palestra": {
+      "muscles": [
+        "Dorsali",
+        "Bicipiti"
+      ],
+      "feel": "Ai lati della schiena, sotto le ascelle. Pensa a portare i gomiti verso le tasche, non a tirare con le mani."
+    },
+    "c-lat-pulldown:casa": {
+      "muscles": [
+        "Dorsali",
+        "Bicipiti"
+      ],
+      "feel": "Ai lati della schiena, sotto le ascelle. Pensa a portare i gomiti verso le tasche, non a tirare con le mani."
+    },
+    "c-rematore:palestra": {
+      "muscles": [
+        "Dorsali",
+        "Schiena alta",
+        "Bicipiti"
+      ],
+      "feel": "In mezzo alla schiena, tra le scapole: stringile a fine tirata. Se senti solo le braccia, tira coi gomiti."
+    },
+    "c-rematore:casa": {
+      "muscles": [
+        "Dorsali",
+        "Schiena alta",
+        "Bicipiti"
+      ],
+      "feel": "In mezzo alla schiena, tra le scapole: stringile a fine tirata. Se senti solo le braccia, tira coi gomiti."
+    },
+    "a-emom-squat": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei"
+      ],
+      "feel": "Davanti alla coscia e nei glutei."
+    },
+    "a-emom-step-up": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei"
+      ],
+      "feel": "Gamba sopra il gradino: coscia e gluteo. Spingi con quella, non rimbalzare con l'altra."
+    },
+    "a-emom-piegamenti": {
+      "muscles": [
+        "Petto",
+        "Tricipiti",
+        "Spalle"
+      ],
+      "feel": "Petto e dietro al braccio."
+    },
+    "a-emom-curl": {
+      "muscles": [
+        "Bicipiti",
+        "Avambracci"
+      ],
+      "feel": "Davanti al braccio e nell'avambraccio. Gomiti fermi ai fianchi."
+    },
+    "b-emom-burpee": {
+      "muscles": [
+        "Tutto il corpo"
+      ],
+      "feel": "Gambe, petto e fiato: è più cardio che forza."
+    },
+    "b-emom-thruster": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei",
+        "Spalle"
+      ],
+      "feel": "Gambe nello squat, spalle nella spinta in alto."
+    },
+    "b-emom-crunch": {
+      "muscles": [
+        "Addome"
+      ],
+      "feel": "Addome alto. Se tira il collo, guarda il soffitto e non tirare la testa con le mani."
+    },
+    "b-emom-alzata-frontale": {
+      "muscles": [
+        "Spalle"
+      ],
+      "feel": "Davanti alla spalla."
+    },
+    "c-emom-affondi-braccia-alte": {
+      "muscles": [
+        "Quadricipiti",
+        "Glutei",
+        "Spalle"
+      ],
+      "feel": "Gambe come negli affondi; spalle e addome per tenere le braccia su."
+    },
+    "c-emom-alzate-posteriori": {
+      "muscles": [
+        "Spalle posteriori",
+        "Schiena alta"
+      ],
+      "feel": "Dietro alla spalla e tra le scapole."
+    },
+    "c-emom-hollow-hold": {
+      "muscles": [
+        "Addome"
+      ],
+      "feel": "Tutto l'addome. Se la schiena si stacca da terra, piega le ginocchia."
+    },
+    "c-emom-alzate-laterali": {
+      "muscles": [
+        "Spalle"
+      ],
+      "feel": "Di lato alla spalla. Se lo senti nel collo, sali meno e abbassa le spalle."
+    }
+  }
+}

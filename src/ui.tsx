@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { clock, useNow } from './hooks';
 import guideData from './guide.json';
+import feelData from './feel.json';
 import { targetReps } from './program';
 import type { ExLog, SetLog } from './types';
 
@@ -182,6 +183,19 @@ export function DangerButton({ label, confirmLabel, onConfirm, className = 'link
 
 export interface GuideRef { key: string; name: string; note?: string; coach?: string }
 const GUIDE = guideData.entries as Record<string, { how: string[]; avoid: string }>;
+const FEEL = feelData.entries as Record<string, { muscles: string[]; feel: string }>;
+export const feelOf = (key: string) => FEEL[key];
+
+/** Muscoli di un gruppo di esercizi, in ordine di quante volte compaiono. */
+export function muscleSummary(keys: string[]): string[] {
+  const n = new Map<string, number>();
+  keys.forEach((k, i) => FEEL[k]?.muscles.forEach((m, j) => n.set(m, (n.get(m) ?? 0) + (j === 0 ? 2 : 1) - i * 0.001)));
+  return [...n].sort((a, b) => b[1] - a[1]).map(([m]) => m);
+}
+
+export function Muscles({ list }: { list: string[] }) {
+  return <span className="mus">{list.map((m, i) => <i key={m} className={i === 0 ? 'p' : ''}>{m}</i>)}</span>;
+}
 
 /** Il nome dell'esercizio come pulsante: apre la spiegazione di come si fa. */
 export function NameButton({ guide, onOpen, className }: { guide: GuideRef; onOpen: (g: GuideRef) => void; className?: string }) {
@@ -197,6 +211,13 @@ export function GuideSheet({ guide, onClose }: { guide: GuideRef; onClose: () =>
   return (
     <Sheet title={guide.name} onClose={onClose}>
       {guide.coach && guide.coach !== guide.name && <p className="note">Al posto di: {guide.coach} (coach).</p>}
+      {FEEL[guide.key] && (
+        <div className="guide-feel">
+          <p className="t-label">Dove lo devi sentire</p>
+          <Muscles list={FEEL[guide.key].muscles} />
+          <p>{FEEL[guide.key].feel}</p>
+        </div>
+      )}
       {guide.note && <div className="guide-note"><p className="t-label">Dal tuo programma</p><p>{guide.note}</p></div>}
       {g && (<>
         <p className="t-label">Come si fa</p>

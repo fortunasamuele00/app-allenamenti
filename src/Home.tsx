@@ -3,7 +3,7 @@ import { blockWeek, F20, getProgram, localDate, nextProgram, partLabel, program,
 import { useSync } from './sync';
 import type { Location, Part, ProgramId, Session, Settings, StoredSession } from './types';
 import { ThemeToggle } from './theme';
-import { DangerButton, Icon } from './ui';
+import { DangerButton, Icon, muscleSummary } from './ui';
 import { Link } from './nav';
 
 const fmtToday = new Intl.DateTimeFormat('it-IT', { weekday: 'long' });
@@ -56,14 +56,17 @@ export function Home({ sessions, settings, draft, onStart, onDiscard, toast }: {
       )}
 
       <article className={`go${loc === 'casa' ? ' casa' : ''}`}>
-        <p className="go-k"><Icon name={loc === 'casa' ? 'home' : 'gym'} />Forza · tocca a</p>
+        <div className="go-top">
+          <p className="go-k">Forza · tocca a</p>
+          <div className="where" role="group" aria-label="Dove fai la forza">
+            {(['palestra', 'casa'] as const).map((l) => (
+              <button key={l} type="button" aria-pressed={loc === l} aria-label={l === 'palestra' ? 'In palestra' : 'A casa'} onClick={() => setLoc(l)}><Icon name={l === 'palestra' ? 'gym' : 'home'} /></button>
+            ))}
+          </div>
+        </div>
         <h2><b>{gym.id}</b>{gym.name}</h2>
         <p className="go-m">{settings.forza20 ? `Parte 1 · warm-up + forza in circuito · ${F20.minutes}'` : `Parte 1 · warm-up + forza · circa ${gym.forza.minutes}'`}</p>
-        <div className="seg" role="group" aria-label="Dove fai la forza">
-          {(['palestra', 'casa'] as const).map((l) => (
-            <button key={l} type="button" aria-pressed={loc === l} onClick={() => setLoc(l)}>{l === 'palestra' ? 'Palestra' : 'Casa'}</button>
-          ))}
-        </div>
+        <p className="go-mu">{muscleSummary(gym.forza.exercises.map((e) => `${e.id}:${loc}`)).join(' · ')}</p>
         <p className="go-l">{gym.forza.exercises.map((e) => `${e[loc].name} ${settings.forza20 ? Math.min(e.sets, F20.rounds) : e.sets} × ${e[loc].target}`).join(' · ')}</p>
         <button className="btn pri" type="button" onClick={() => onStart(gym.id, 'forza', loc)}>{loc === 'casa' ? 'Inizia a casa' : 'Inizia in palestra'}</button>
       </article>
@@ -72,6 +75,7 @@ export function Home({ sessions, settings, draft, onStart, onDiscard, toast }: {
         <p className="go-k"><Icon name="home" />EMOM a casa · tocca a</p>
         <h2><b>{home.id}</b>{home.name}</h2>
         <p className="go-m">Parte 2 · EMOM {home.emom.minutes}' + stretching · circa 25'</p>
+        <p className="go-mu">{muscleSummary(home.emom.exercises.map((e) => e.id)).join(' · ')}</p>
         <p className="go-l">{home.emom.exercises.map((e) => e.name).join(' · ')}</p>
         <button className="btn ink" type="button" onClick={() => onStart(home.id, 'emom', 'casa')}>Inizia a casa</button>
       </article>
