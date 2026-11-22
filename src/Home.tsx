@@ -106,7 +106,6 @@ export function Home({ sessions, settings, draft, onStart, onDiscard, toast }: {
         <div className="caps" role="img" aria-label={`${done} sedute fatte su ${goal}`}>
           {Array.from({ length: goal }, (_, i) => <i key={i} className={i < done ? 'd' : ''} />)}
         </div>
-        <p className="t-label">3 forza, 3 EMOM, 1 giorno di riposo, sempre nello stesso ordine</p>
       </section>
 
       <Link className="all" to="#/programma">Tutto il programma<Icon name="chev" /></Link>

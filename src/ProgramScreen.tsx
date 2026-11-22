@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { F20, lastSession, program, SEQ, sequenceState, shortDay, sortedDesc } from './program';
 import { SeqStrip } from './Home';
-import { readyToProgress } from './progression';
+import { progressTip } from './progression';
 import type { Location, Part, ProgramId, Settings, StoredSession } from './types';
 import { feelOf, GuideSheet, Icon, Muscles, muscleSummary, NameButton, ReadyBadge, TopBar, type GuideRef } from './ui';
 import { go } from './nav';
@@ -33,9 +33,9 @@ export function ProgramScreen({ sessions, settings }: { sessions: StoredSession[
       <p className="prog-help">Qui vedi cosa c'è in ogni giorno. Si inizia dalla home, sempre in quest'ordine.</p>
       {program.programs.map((p) => {
         const ready = [
-          ...p.forza.exercises.flatMap((e) => (['palestra', 'casa'] as const).filter((v) => readyToProgress(sessions, p.id, 'forza', e.id, v)).map((v) => e[v].name)),
-          ...p.emom.exercises.filter((e) => readyToProgress(sessions, p.id, 'emom', e.id, 'casa')).map((e) => e.name),
-        ];
+          ...p.forza.exercises.flatMap((e) => (['palestra', 'casa'] as const).map((v) => [e[v].name, progressTip(sessions, p.id, 'forza', e.id, v)] as const)),
+          ...p.emom.exercises.map((e) => [e.name, progressTip(sessions, p.id, 'emom', e.id, 'casa')] as const),
+        ].filter(([, t]) => t).map(([n, t]) => `${n}: ${t!.title.charAt(0).toLowerCase()}${t!.title.slice(1)}`);
         const tile = (part: Part) => {
           const last = lastSession(sessions, p.id, part);
           const isNext = now.part === part && now.program === p.id;
@@ -69,7 +69,7 @@ export function ProgramScreen({ sessions, settings }: { sessions: StoredSession[
                 {p.emom.exercises.map((e) => row({ key: e.id, name: e.name, note: e.note, coach: e.coach }, e.target))}
               </div>
             )}
-            {ready.map((n) => <ReadyBadge key={n} text={`${n}: pronto a salire`} />)}
+            {ready.map((n) => <ReadyBadge key={n} text={n} />)}
           </article>
         );
       })}

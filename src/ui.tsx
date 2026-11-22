@@ -162,6 +162,12 @@ export function TopBar({ title, onBack, right }: { title: string; onBack: () => 
   );
 }
 
+/** Consiglio per far più fatica quando un esercizio è diventato facile. */
+export function TipCard({ tip }: { tip: { title: string; text: string } | null }) {
+  if (!tip) return null;
+  return <div className="tip"><p><Icon name="up" />{tip.title}</p><small>{tip.text}</small></div>;
+}
+
 export function ReadyBadge({ text = 'Pronto a salire' }: { text?: string }) {
   return <span className="badge"><Icon name="up" />{text}</span>;
 }

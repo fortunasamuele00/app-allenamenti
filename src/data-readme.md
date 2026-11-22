@@ -94,6 +94,4 @@ Il programma attivo, nella stessa forma in cui lo usa l'app.
 
 ## Regola di progressione
 
-Dal file del coach: se nell'ultima serie di un esercizio le ripetizioni sono almeno 2 in più del previsto per due sedute di fila dello stesso programma, è il momento di salire (elastico più duro, variante più difficile o carico). L'app mostra solo un badge "Pronto a salire" e non modifica il programma.
-
-Per ricalcolarla: prendi le ultime due sedute con lo stesso `program` e `part` in cui compare lo stesso `id` con la stessa `variant`; guarda l'ultima serie con `done: true`; confronta `reps` con il numero più alto del `target` (`"3x10-15"` → 15).
+Un esercizio è "facile" quando nell'ultima serie con `done: true` le ripetizioni sono almeno 2 in più del previsto (`"3x10-15"` → 15). Per gli esercizi a tempo bastano 10 secondi in più. Se è stato facile in almeno 2 sedute di fila dello stesso `program` e `part`, con lo stesso `id` e `variant` e (per gli elastici) lo stesso elastico, l'app dà un consiglio per far più fatica: elastico più duro, pausa di 1-2'' nell'ultima serie, discesa in 3 secondi, variante più dura, 2 ripetizioni in più; col carico, +2,5 kg. Se resta facile, il consiglio passa al gradino dopo ogni 2 sedute. Cambiare elastico fa ripartire il conto. L'app non modifica mai il programma.

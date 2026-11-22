@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { beep, chime, releaseAudio, unlockAudio, useWakeLock } from './hooks';
 import { describeLast, F20, forzaExercise, getProgram, lastExercise } from './program';
-import { readyToProgress } from './progression';
+import { progressTip } from './progression';
 import type { ExLog, ForzaEx, Location, Session, SetLog, Settings, StoredSession } from './types';
-import { Check, DangerButton, GapRest, GuideSheet, Icon, NameButton, ReadyBadge, RestDock, SetFields, Sheet, TopBar, setCols, type GuideRef, type Rest } from './ui';
+import { Check, DangerButton, GapRest, GuideSheet, Icon, NameButton, TipCard, RestDock, SetFields, Sheet, TopBar, setCols, type GuideRef, type Rest } from './ui';
 import { go } from './nav';
 
 export function SessionScreen({ draft, setDraft, sessions, settings, saveSettings, onFinish, onDiscard }: {
@@ -119,7 +119,7 @@ export function SessionScreen({ draft, setDraft, sessions, settings, saveSetting
                   ))}
                 </div>
                 <p className="last"><span>Ultima volta</span>{last ? describeLast(last) : 'prima seduta'}</p>
-                {readyToProgress(sessions, draft.program, 'forza', ex.id, ex.variant) && <ReadyBadge />}
+                <TipCard tip={progressTip(sessions, draft.program, 'forza', ex.id, ex.variant)} />
               </div>
             );
           })}
@@ -156,7 +156,7 @@ export function SessionScreen({ draft, setDraft, sessions, settings, saveSetting
             </div>
             {note && <p className="note">{note}</p>}
             <p className="last"><span>Ultima volta</span>{last ? describeLast(last) : 'prima seduta'}</p>
-            {readyToProgress(sessions, draft.program, 'forza', ex.id, ex.variant) && <ReadyBadge />}
+            <TipCard tip={progressTip(sessions, draft.program, 'forza', ex.id, ex.variant)} />
             {ex.sets.map((s, si) => (
               <div key={si}>
                 <div className={`set${setCols(ex)}${s.done ? ' done' : ''}`}>

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { beep, chime, clock, releaseAudio, unlockAudio, useNow, useWakeLock } from './hooks';
 import { describeLast, getProgram, lastExercise, targetReps } from './program';
-import { readyToProgress } from './progression';
+import { progressTip } from './progression';
 import type { ExLog, Session, SetLog, StoredSession } from './types';
-import { DangerButton, GuideSheet, Icon, NameButton, NumField, ReadyBadge, Sheet, TopBar, type GuideRef, BandField } from './ui';
+import { DangerButton, GuideSheet, Icon, NameButton, NumField, TipCard, Sheet, TopBar, type GuideRef, BandField } from './ui';
 import { go } from './nav';
 
 type Phase = 'ready' | 'run' | 'pause' | 'done';
@@ -115,7 +115,7 @@ export function EmomScreen({ draft, setDraft, sessions, onFinish, onDiscard }: {
             <article className="ex" key={ex.id}>
               <div className="ex-h"><h3 className="t-title"><NameButton guide={guideOf(ex.id)} onOpen={setGuide} /></h3><span>{ex.target}</span></div>
               <p className="last"><span>Ultima volta</span>{last ? describeLast(last) : 'prima seduta'}</p>
-              {readyToProgress(sessions, draft.program, 'emom', ex.id, 'casa') && <ReadyBadge />}
+              <TipCard tip={progressTip(sessions, draft.program, 'emom', ex.id, 'casa')} />
               {ex.type === 'elastico_rip' && (
                 <div className="band"><BandField value={ex.sets[0].band} label={`Elastico per ${ex.name}`}
                   onChange={(band) => update((d) => d.exercises.find((e) => e.id === ex.id)!.sets.forEach((s) => { s.band = band; }))} /></div>
