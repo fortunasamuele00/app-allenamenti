@@ -1,8 +1,8 @@
 {
   "id": "meso1",
   "name": "Meso 1",
-  "start": "2026-10-26",
-  "end": "2026-11-22",
+  "start": "2026-11-23",
+  "end": "2026-12-20",
   "source": "Salute e Fitness Resources/allenamento/2026-10_Meso1_Casa_o_Palestra.md",
   "convertedAt": "2026-10-10",
   "notes": [
@@ -11,9 +11,19 @@
     "Lo stretching Mézières di 5' compare nell'app come promemoria a fine Parte 2 e non viene registrato.",
     "Il plank del warm-up A (30'' centrale + 30'' lato dx + 30'' lato sx) è diviso in tre righe a tempo.",
     "substitution: true = sostituzione di Samuele per mancanza di pesi (il segno ✎ nel file), non del coach.",
-    "EMOM, modifiche di Samuele del 2026-10-31 rispetto al file del coach: gli esercizi con elastico stanno di seguito in ogni giro; nel programma C affondi con elastico sopra la testa e alzata frontale sono sostituiti perché l'elastico è aperto e l'alzata frontale è già nel B."
+    "EMOM, modifiche di Samuele del 2026-10-31 rispetto al file del coach: gli esercizi con elastico stanno di seguito in ogni giro; nel programma C affondi con elastico sopra la testa e alzata frontale sono sostituiti perché l'elastico è aperto e l'alzata frontale è già nel B.",
+    "Dal 2026-11-22 il programma lo gestisce Samuele: il Meso 1 riparte dal 23 novembre e le sedute seguono una sola sequenza fissa (sequence) invece di due rotazioni A→B→C indipendenti. È l'ordine con meno muscoli ripetuti a 24 e 48 ore; dopo l'EMOM C viene il giorno di riposo."
   ],
   "weekly": { "palestra": 3, "casa": 3, "riposo": 1 },
+  "sequenceFrom": "2026-11-22",
+  "sequence": [
+    { "part": "forza", "program": "A" },
+    { "part": "forza", "program": "B" },
+    { "part": "emom", "program": "B" },
+    { "part": "forza", "program": "C" },
+    { "part": "emom", "program": "A" },
+    { "part": "emom", "program": "C" }
+  ],
   "defaults": { "restForza": 120, "restWarmup": 30 },
   "programs": [
     {

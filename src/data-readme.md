@@ -8,7 +8,7 @@ Chi legge questo repo (di solito un'altra istanza di Claude) trova qui tutto que
 
 | Percorso | Contenuto |
 |---|---|
-| `program.json` | Il programma attivo, convertito dal file del coach. |
+| `program.json` | Il programma attivo, convertito dal file del coach e poi gestito da Samuele. |
 | `sessions/YYYY-MM-DD_<programma>_<parte>.json` | Una seduta. `<programma>` è `A`, `B` o `C`; `<parte>` è `forza` o `emom`. |
 
 Un file per seduta. Se la stessa seduta viene salvata due volte nello stesso giorno, il file viene sovrascritto (la storia resta nei commit).
@@ -86,7 +86,8 @@ I campi numerici mancanti non sono zeri: non sono stati inseriti.
 
 Il programma attivo, nella stessa forma in cui lo usa l'app.
 
-- `start`, `end`: date del blocco.
+- `start`, `end`: date del blocco. Il Meso 1 è ripartito il 2026-11-23.
+- `sequence[]`: l'ordine fisso delle sedute (`part` + `program`), che si ripete. La prossima seduta è quella dopo l'ultima fatta da `sequenceFrom` in poi; dopo l'ultima della lista c'è un giorno di riposo.
 - `programs[]`: `A`, `B`, `C`. Ognuno ha `forza` (con `warmup` a giri e `exercises` con le due varianti `palestra` e `casa`) ed `emom` (`minutes`, `rounds`, `exercises`, `stretching`, `cardio`).
 - `substitution: true` segna le sostituzioni di Samuele per mancanza di pesi, che non sono del coach.
 - `notes` elenca cosa è stato lasciato fuori dalla conversione e perché.

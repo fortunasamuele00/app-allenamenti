@@ -323,3 +323,19 @@ input, textarea, select { font: inherit; color: inherit; }
 .pv-row .mus { margin-top: 6px; }
 .daycard .go-mu { margin-top: -4px; }
 .daycard .go-mu + .parts { margin-top: 12px; }
+
+/* Sequenza fissa in home */
+.where-fixed { display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--r-full); background: var(--surface); color: var(--text-2); }
+.where-fixed .ic { width: 20px; height: 20px; }
+.seq { margin-top: 12px; }
+.seq ol { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin: 0; padding: 0; list-style: none; }
+.seq li { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0; border-radius: var(--r-sm); background: var(--surface); border: 1.5px solid transparent; }
+.seq li small { font: 500 10px/1 var(--font-body); color: var(--text-2); }
+.seq li b { font: 500 16px/1 var(--font-display); }
+.seq li.d { opacity: .45; }
+.seq li.now { border-color: var(--text); }
+.seq li.rest { background: transparent; border: 1.5px dashed var(--line-2); }
+.seq li.rest.now { border: 1.5px solid var(--text); }
+.seq p { margin-top: 8px; font-size: 13px; color: var(--text-2); }
+.prog-help { margin: 8px 0 16px; font-size: 13px; color: var(--text-2); }
+.prog-h + .seq { margin-top: 0; }

@@ -95,7 +95,7 @@ export function App() {
     view = draft.part === 'forza'
       ? <SessionScreen draft={draft} setDraft={setDraft} sessions={sessions} settings={settings} saveSettings={(s) => void saveSettings(s)} onFinish={(s) => void finish(s)} onDiscard={discard} />
       : <EmomScreen draft={draft} setDraft={setDraft} sessions={sessions} onFinish={(s) => void finish(s)} onDiscard={discard} />;
-  } else if (hash === '#/programma') view = <ProgramScreen sessions={sessions} settings={settings} onStart={start} />;
+  } else if (hash === '#/programma') view = <ProgramScreen sessions={sessions} settings={settings} />;
   else if (hash.startsWith('#/storico/')) {
     const s = sessions.find((x) => x.id === decodeURIComponent(hash.slice('#/storico/'.length)));
     nav = false;

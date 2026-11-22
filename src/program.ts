@@ -4,6 +4,8 @@ import type { ExLog, ForzaEx, Location, Part, ProgramDef, ProgramId, Session, Se
 export const program = raw as unknown as {
   id: string; name: string; start: string; end: string;
   weekly: { palestra: number; casa: number; riposo: number };
+  sequence: { part: Part; program: ProgramId }[];
+  sequenceFrom: string;
   defaults: { restForza: number; restWarmup: number };
   programs: ProgramDef[];
 };
@@ -38,10 +40,26 @@ export function targetReps(target: string): number | null {
 
 export const sortedDesc = (s: StoredSession[]) => [...s].sort((a, b) => (a.startedAt < b.startedAt ? 1 : -1));
 
-/** Due rotazioni indipendenti A → B → C: una per la forza, una per l'EMOM. */
+/** Due rotazioni indipendenti A → B → C: una per la forza, una per l'EMOM. Non decide più cosa tocca: lo fa la sequenza. */
 export function nextProgram(sessions: StoredSession[], part: Part): ProgramId {
   const last = sortedDesc(sessions).find((s) => s.part === part);
   return last ? ORDER[(ORDER.indexOf(last.program) + 1) % 3] : 'A';
+}
+
+export type Step = { part: Part; program: ProgramId };
+export const SEQ = program.sequence;
+export const stepLabel = (s: Step) => `${s.part === 'forza' ? 'Forza' : 'EMOM'} ${s.program}`;
+
+/**
+ * Una sola sequenza fissa che si ripete. Conta solo le sedute da `program.sequenceFrom` in poi (il giorno in cui è partita):
+ * la prossima è quella dopo l'ultima fatta. `last` serve per il giorno di riposo dopo l'ultima della lista.
+ */
+export function sequenceState(sessions: StoredSession[]): { index: number; done: number; last?: StoredSession } {
+  const last = sortedDesc(sessions).find((s) => s.date >= program.sequenceFrom);
+  if (!last) return { index: 0, done: 0 };
+  const at = SEQ.findIndex((x) => x.part === last.part && x.program === last.program);
+  const index = (at + 1) % SEQ.length;
+  return { index, done: index, last };
 }
 
 export function lastSession(sessions: StoredSession[], prog: ProgramId, part: Part): StoredSession | undefined {
