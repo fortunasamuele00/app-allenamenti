@@ -371,6 +371,9 @@ input, textarea, select { font: inherit; color: inherit; }
 .motivo.img small { color: rgba(255, 255, 255, .8); }
 .motivo small.warn { color: var(--accent-ink); font-weight: 500; }
 .motivo.img small.warn { color: var(--accent); }
-.motivo.prev { min-height: 160px; margin: 12px 0 0; }
+.thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 12px; }
+.thumb { position: relative; aspect-ratio: 3 / 4; border-radius: var(--r-sm); background-size: cover; background-position: center; }
+.thumb button { position: absolute; top: 6px; right: 6px; display: grid; place-items: center; width: 32px; height: 32px; border-radius: var(--r-full); background: rgba(0, 0, 0, .6); color: #fff; }
+.thumb button .ic { width: 16px; height: 16px; }
 .btn.file { position: relative; overflow: hidden; }
 .btn.file input { position: absolute; inset: 0; opacity: 0; }

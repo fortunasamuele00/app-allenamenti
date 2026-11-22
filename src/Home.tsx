@@ -44,14 +44,24 @@ const MOTTI = [
   'Lui si è allenato anche oggi. E tu?',
   'Una seduta alla volta. Oggi tocca a questa.',
 ];
+/** Un passo a caso da 1 a n-1 ogni giorno a partire da una data fissa: casuale, stabile nel giorno, mai uguale a ieri. */
+function pick(day: number, n: number): number {
+  if (n < 2) return 0;
+  const h = (x: number) => { let v = Math.imul(x ^ 0x9e3779b9, 0x85ebca6b); v ^= v >>> 13; v = Math.imul(v, 0xc2b2ae35); v ^= v >>> 16; return v >>> 0; };
+  let i = 0;
+  for (let d = 20000; d <= day; d++) i = (i + 1 + (h(d) % (n - 1))) % n;
+  return i;
+}
 const fmtAgo = (days: number) => (days === 0 ? 'oggi' : days === 1 ? 'ieri' : `${days} giorni fa`);
 
 /** La spinta ad allenarsi: la tua frase, la tua immagine, e da quanto non ti alleni. */
 function Motivo({ settings, sessions }: { settings: Settings; sessions: StoredSession[] }) {
-  const [img, setImg] = useState<string | null>(null);
-  useEffect(() => { void db.motivoImg().then(setImg).catch(() => setImg(null)); }, []);
+  const [imgs, setImgs] = useState<string[]>([]);
+  useEffect(() => { void db.motivoImgs().then(setImgs).catch(() => setImgs([])); }, []);
   const today = new Date();
   const dayN = Math.floor(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() / 86400000);
+  // Una a caso ma fissa per tutto il giorno, e mai la stessa di ieri se ce n'è più d'una.
+  const img = imgs.length ? imgs[pick(dayN, imgs.length)] : null;
   const text = settings.motto.trim() || MOTTI[dayN % MOTTI.length];
   const last = sortedDesc(sessions)[0];
   const ago = last ? Math.round((new Date(localDate(today) + 'T00:00:00').getTime() - new Date(last.date + 'T00:00:00').getTime()) / 86400000) : null;

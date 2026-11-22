@@ -47,9 +47,14 @@ export const db = {
   saveSettings: (s: Settings) => use(async (d) => { await d.put('kv', s, 'settings'); }),
   draft: () => use(async (d) => ((await d.get('kv', 'draft')) as Session | undefined) ?? null),
   saveDraft: (s: Session | null) => use(async (d) => { if (s) await d.put('kv', s, 'draft'); else await d.delete('kv', 'draft'); }),
-  /** L'immagine della motivazione, come data URL. Resta solo su questo telefono, non va su GitHub. */
-  motivoImg: () => use(async (d) => ((await d.get('kv', 'motivo-img')) as string | undefined) ?? null),
-  saveMotivoImg: (img: string | null) => use(async (d) => { if (img) await d.put('kv', img, 'motivo-img'); else await d.delete('kv', 'motivo-img'); }),
+  /** Le immagini della motivazione, come data URL. Restano solo su questo telefono, non vanno su GitHub. */
+  motivoImgs: () => use(async (d) => {
+    const list = (await d.get('kv', 'motivo-imgs')) as string[] | undefined;
+    if (list) return list;
+    const one = (await d.get('kv', 'motivo-img')) as string | undefined; // prima ce n'era una sola
+    return one ? [one] : [];
+  }),
+  saveMotivoImgs: (imgs: string[]) => use(async (d) => { await d.put('kv', imgs, 'motivo-imgs'); await d.delete('kv', 'motivo-img'); }),
   pushed: () => use(async (d) => ((await d.get('kv', 'pushed')) as Record<string, string> | undefined) ?? {}),
   savePushed: (p: Record<string, string>) => use(async (d) => { await d.put('kv', p, 'pushed'); }),
 };

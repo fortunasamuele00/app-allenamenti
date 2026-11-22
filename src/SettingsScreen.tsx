@@ -4,7 +4,7 @@ import { flush, restoreFromRepo, testConnection, useSync } from './sync';
 import type { Settings } from './types';
 import { HEALTH_SHORTCUT } from './program';
 import { ThemeToggle } from './theme';
-import { NumField } from './ui';
+import { Icon, NumField } from './ui';
 
 /** Rimpicciolisce la foto prima di salvarla: basta per lo sfondo e non pesa sul telefono. */
 function shrink(file: File): Promise<string> {
@@ -26,24 +26,35 @@ function shrink(file: File): Promise<string> {
 
 function MotivoSettings({ settings, saveSettings }: { settings: Settings; saveSettings: (s: Settings) => Promise<void> }) {
   const [motto, setMotto] = useState(settings.motto);
-  const [img, setImg] = useState<string | null>(null);
+  const [imgs, setImgs] = useState<string[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
-  useEffect(() => { void db.motivoImg().then(setImg).catch(() => setImg(null)); }, []);
+  useEffect(() => { void db.motivoImgs().then(setImgs).catch(() => setImgs([])); }, []);
+  const save = async (next: string[], m: string) => { await db.saveMotivoImgs(next); setImgs(next); setMsg(m); };
   return (
     <section className="ex">
       <h2 className="t-title">Motivazione</h2>
-      <p className="note">La frase e l'immagine che vedi in home, sotto il giro. Scrivi chi vuoi diventare. Restano su questo telefono.</p>
+      <p className="note">La frase e l'immagine che vedi in home, sotto il giro. Con più immagini ne esce una a caso ogni giorno. Restano su questo telefono.</p>
       <label className="field"><span>La tua frase</span>
         <textarea rows={2} value={motto} placeholder="Vuota: una frase diversa ogni giorno" onChange={(e) => setMotto(e.target.value)} /></label>
       <button className="btn wide" type="button" disabled={motto === settings.motto} onClick={async () => { await saveSettings({ ...settings, motto }); setMsg('Frase salvata.'); }}>Salva la frase</button>
-      {img && <div className="motivo img prev" style={{ backgroundImage: `url(${img})` }} />}
-      <label className="btn wide file">{img ? 'Cambia immagine' : "Scegli un'immagine"}
-        <input type="file" accept="image/*" onChange={async (e) => {
-          const f = e.target.files?.[0]; if (!f) return;
-          try { const d = await shrink(f); await db.saveMotivoImg(d); setImg(d); setMsg('Immagine salvata.'); } catch (err) { setMsg(err instanceof Error ? err.message : String(err)); }
-          e.target.value = '';
+      {imgs.length > 0 && (
+        <div className="thumbs">
+          {imgs.map((im, i) => (
+            <div key={i} className="thumb" style={{ backgroundImage: `url(${im})` }}>
+              <button type="button" aria-label={`Togli l'immagine ${i + 1}`} onClick={() => void save(imgs.filter((_, j) => j !== i), 'Immagine tolta.')}><Icon name="minus" /></button>
+            </div>
+          ))}
+        </div>
+      )}
+      <label className="btn wide file">{imgs.length ? 'Aggiungi immagini' : 'Scegli le immagini'}
+        <input type="file" accept="image/*" multiple onChange={async (e) => {
+          const files = [...(e.target.files ?? [])]; e.target.value = '';
+          if (!files.length) return;
+          try {
+            const added = await Promise.all(files.map(shrink));
+            await save([...imgs, ...added], added.length === 1 ? 'Immagine aggiunta.' : `${added.length} immagini aggiunte.`);
+          } catch (err) { setMsg(err instanceof Error ? err.message : String(err)); }
         }} /></label>
-      {img && <button className="link danger" type="button" onClick={async () => { await db.saveMotivoImg(null); setImg(null); setMsg('Immagine tolta.'); }}>Togli l'immagine</button>}
       {msg && <p className="t-label" role="status">{msg}</p>}
     </section>
   );
