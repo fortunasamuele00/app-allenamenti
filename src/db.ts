@@ -55,6 +55,9 @@ export const db = {
     return one ? [one] : [];
   }),
   saveMotivoImgs: (imgs: string[]) => use(async (d) => { await d.put('kv', imgs, 'motivo-imgs'); await d.delete('kv', 'motivo-img'); }),
+  /** Le immagini della cartella motivo/ del repo privato: nome file → data URL. */
+  motivoRepo: () => use(async (d) => ((await d.get('kv', 'motivo-repo')) as Record<string, string> | undefined) ?? {}),
+  saveMotivoRepo: (m: Record<string, string>) => use(async (d) => { await d.put('kv', m, 'motivo-repo'); }),
   pushed: () => use(async (d) => ((await d.get('kv', 'pushed')) as Record<string, string> | undefined) ?? {}),
   savePushed: (p: Record<string, string>) => use(async (d) => { await d.put('kv', p, 'pushed'); }),
 };

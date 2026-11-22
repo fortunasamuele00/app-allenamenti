@@ -33,7 +33,7 @@ function MotivoSettings({ settings, saveSettings }: { settings: Settings; saveSe
   return (
     <section className="ex">
       <h2 className="t-title">Motivazione</h2>
-      <p className="note">La frase e l'immagine che vedi in home, sotto il giro. Con più immagini ne esce una a caso ogni giorno. Restano su questo telefono.</p>
+      <p className="note">La frase e l'immagine che vedi in home, sotto il giro. Ogni giorno esce un'immagine a caso tra le tue e quelle nella cartella motivo/ del repo privato dei dati. Quelle che aggiungi qui restano su questo telefono.</p>
       <label className="field"><span>La tua frase</span>
         <textarea rows={2} value={motto} placeholder="Vuota: una frase diversa ogni giorno" onChange={(e) => setMotto(e.target.value)} /></label>
       <button className="btn wide" type="button" disabled={motto === settings.motto} onClick={async () => { await saveSettings({ ...settings, motto }); setMsg('Frase salvata.'); }}>Salva la frase</button>

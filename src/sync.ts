@@ -158,3 +158,33 @@ export async function migrateBands(): Promise<void> {
   const fd = d && fixBands(d);
   if (fd) await db.saveDraft(fd);
 }
+
+/**
+ * Immagini della motivazione: stanno nella cartella motivo/ del repo privato (mai nel repo pubblico dell'app).
+ * Scarica solo quelle nuove e dimentica quelle tolte. Senza token o senza rete tiene quelle che ha.
+ */
+export async function syncMotivo(): Promise<boolean> {
+  const s = await db.settings();
+  if (!isConfigured(s) || !navigator.onLine) return false;
+  try {
+    const res = await api(s, 'motivo');
+    if (!res.ok) return false;
+    const list = ((await res.json()) as { name: string; type: string }[]).filter((f) => f.type === 'file' && /\.(jpe?g|png|webp)$/i.test(f.name));
+    const have = await db.motivoRepo();
+    const next: Record<string, string> = {};
+    let changed = Object.keys(have).some((n) => !list.some((f) => f.name === n));
+    for (const f of list) {
+      if (have[f.name]) { next[f.name] = have[f.name]; continue; }
+      const r = await api(s, `motivo/${f.name}`);
+      if (!r.ok) continue;
+      const j = (await r.json()) as { content: string };
+      const mime = /\.png$/i.test(f.name) ? 'image/png' : /\.webp$/i.test(f.name) ? 'image/webp' : 'image/jpeg';
+      next[f.name] = `data:${mime};base64,${j.content.replace(/\n/g, '')}`;
+      changed = true;
+    }
+    if (changed) await db.saveMotivoRepo(next);
+    return changed;
+  } catch {
+    return false;
+  }
+}

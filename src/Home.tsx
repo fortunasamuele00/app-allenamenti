@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { db } from './db';
 import { blockWeek, F20, getProgram, localDate, partLabel, program, SEQ, sequenceState, sortedDesc } from './program';
-import { useSync } from './sync';
+import { syncMotivo, useSync } from './sync';
 import type { Location, Part, ProgramId, Session, Settings, StoredSession } from './types';
 import { ThemeToggle } from './theme';
 import { DangerButton, Icon, muscleSummary } from './ui';
@@ -57,7 +57,11 @@ const fmtAgo = (days: number) => (days === 0 ? 'oggi' : days === 1 ? 'ieri' : `$
 /** La spinta ad allenarsi: la tua frase, la tua immagine, e da quanto non ti alleni. */
 function Motivo({ settings, sessions }: { settings: Settings; sessions: StoredSession[] }) {
   const [imgs, setImgs] = useState<string[]>([]);
-  useEffect(() => { void db.motivoImgs().then(setImgs).catch(() => setImgs([])); }, []);
+  useEffect(() => {
+    const load = () => Promise.all([db.motivoImgs(), db.motivoRepo()]).then(([mine, repo]) => setImgs([...mine, ...Object.keys(repo).sort().map((k) => repo[k])])).catch(() => setImgs([]));
+    void load();
+    void syncMotivo().then((changed) => { if (changed) void load(); });
+  }, []);
   const today = new Date();
   const dayN = Math.floor(new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime() / 86400000);
   // Una a caso ma fissa per tutto il giorno, e mai la stessa di ieri se ce n'è più d'una.
@@ -66,8 +70,9 @@ function Motivo({ settings, sessions }: { settings: Settings; sessions: StoredSe
   const last = sortedDesc(sessions)[0];
   const ago = last ? Math.round((new Date(localDate(today) + 'T00:00:00').getTime() - new Date(last.date + 'T00:00:00').getTime()) / 86400000) : null;
   return (
-    <Link className={`motivo${img ? ' img' : ''}`} to="#/impostazioni" style={img ? { backgroundImage: `url(${img})` } : undefined} aria-label={`${text} Tocca per cambiarla.`}>
-      <span>
+    <Link className="motivo" to="#/impostazioni" aria-label={`${text} Tocca per cambiarla.`}>
+      {img && <span className="motivo-img" style={{ backgroundImage: `url(${img})` }} />}
+      <span className="motivo-t">
         <q>{text}</q>
         {ago != null && <small className={ago >= 2 ? 'warn' : ''}>Ultimo allenamento: {fmtAgo(ago)}</small>}
       </span>

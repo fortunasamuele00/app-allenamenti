@@ -8,6 +8,7 @@ Chi legge questo repo (di solito un'altra istanza di Claude) trova qui tutto que
 
 | Percorso | Contenuto |
 |---|---|
+| `motivo/` | Immagini motivazionali (anime, da Pinterest) per la home dell'app, solo uso personale. Non sono dati di allenamento. |
 | `program.json` | Il programma attivo, convertito dal file del coach e poi gestito da Samuele. |
 | `sessions/YYYY-MM-DD_<programma>_<parte>.json` | Una seduta. `<programma>` è `A`, `B` o `C`; `<parte>` è `forza` o `emom`. |
 
